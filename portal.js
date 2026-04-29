@@ -16,10 +16,22 @@
       ? 'http://localhost:8000'
       : 'https://api.teo.chat';
 
-  const slug = new URLSearchParams(location.search).get('v');
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('v');
+  const token = params.get('t');
 
   if (slug) {
-    fetchResumen(slug);
+    // Strip the magic-link token from the URL bar so it doesn't leak via
+    // referrers, screenshots, or pasted links. The browser keeps the
+    // HttpOnly cookie that the API just set on the first authenticated
+    // load (§31.13).
+    if (token) {
+      params.delete('t');
+      const qs = params.toString();
+      const newUrl = location.pathname + (qs ? '?' + qs : '') + location.hash;
+      history.replaceState(null, '', newUrl);
+    }
+    fetchResumen(slug, token);
   } else {
     initUi();
   }
@@ -27,8 +39,9 @@
   // ───────────────────────────────────────────────────────────────────────────
   //  Fetch + error handling
   // ───────────────────────────────────────────────────────────────────────────
-  async function fetchResumen(slug) {
-    const url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resumen`;
+  async function fetchResumen(slug, token) {
+    let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resumen`;
+    if (token) url += `?t=${encodeURIComponent(token)}`;
     let resp;
     try {
       resp = await fetch(url, { credentials: 'include' });
