@@ -1,0 +1,4843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Teo — Portal homepage mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:    #F5F1E8;
+    --paper-2:  #EAE5D6;
+    --paper-3:  #DCD5C0;
+    --ink:      #111111;
+    --ink-soft: #2a2a2a;
+    --mid:      #666;
+    --light:    #9a9a9a;
+    --line:     #b8b1a0;
+    --wa:       #128C7E;
+    --wa-hover: #0e7468;
+    --red:      #a62c14;
+    --red-pale: #F2DFD7;
+    --amber:    #a46a0a;
+    --amber-pale:#EADFBF;
+    --green-ok: #2E6A38;
+    --green-pale:#DFE8D8;
+    --star:     #e9a41e;
+
+    --font-display: 'VT323', 'IBM Plex Mono', monospace;
+    --font-body:    'IBM Plex Mono', 'Courier New', Courier, monospace;
+  }
+
+  html, body {
+    height: 100%;
+    background: #000;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ════════════════════════════════════════════
+     LAB (outer demo wrapper)
+     ════════════════════════════════════════════ */
+  .lab {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lab-header {
+    width: 100%;
+    flex-shrink: 0;
+    background: #0a0a0a;
+    color: #eee;
+    padding: 8px 14px;
+    border-bottom: 1px solid #222;
+  }
+
+  .state-switcher {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex: 1;
+  }
+
+  .lab-header-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .state-switcher::-webkit-scrollbar { display: none; }
+
+  .state-btn {
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .state-btn:hover { border-color: #888; color: #ddd; }
+  .state-btn.active {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+  }
+
+  /* ════════════════════════════════════════════
+     PHONE FRAME
+     ════════════════════════════════════════════ */
+  .phone {
+    width: 100%;
+    max-width: 420px;
+    flex: 1;
+    min-height: 0;
+    background: var(--paper);
+    position: relative;
+
+    background-image:
+      repeating-linear-gradient(0deg,
+        rgba(0,0,0,0.018) 0,
+        rgba(0,0,0,0.018) 1px,
+        transparent 1px,
+        transparent 3px);
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  @media (min-width: 640px) {
+    .phone {
+      margin: 20px 0;
+      max-height: 880px;
+      border-radius: 32px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+      border: 8px solid #222;
+    }
+  }
+
+  /* ════════════════════════════════════════════
+     HALFTONE DARK
+     Black dots on cream paper — like a thermal/dot-matrix print.
+     Background-color stays paper; the dots do the darkening.
+     1.75px grid, 1.0px dot radius (~95% coverage).
+     ════════════════════════════════════════════ */
+  .topbar,
+  .bottom-nav,
+  .delta-widget.paid,
+  .cta-btn,
+  .fomo-btn {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, #0a0a0a 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+  }
+
+  .delta-widget.free {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, #3a0f08 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+  }
+
+  /* Green CTA buttons — WhatsApp green dots on cream */
+  .cta-btn {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, var(--wa) 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+  }
+  .cta-btn:hover {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, var(--wa-hover) 1.0px, transparent 1.15px);
+  }
+
+  /* Darker cream sections — subtle paper halftone, smaller dots to stay light */
+  .paper-2-dotted,
+  .fp-widget,
+  .comp-chip,
+  .social-detail-item,
+  .cta-item.all-clear,
+  .cta-item.soft,
+  .delta-placeholder {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.55) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+  }
+
+  /* Text crisping on halftone surfaces */
+  .topbar,
+  .bottom-nav .nav-btn,
+  .delta-widget,
+  .cta-btn {
+    text-shadow: 0 0 1px rgba(0,0,0,0.9);
+  }
+
+  /* ════════════════════════════════════════════
+     STICKY HEADER (top)
+     ════════════════════════════════════════════ */
+  .topbar {
+    flex-shrink: 0;
+    color: var(--paper);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: lowercase;
+  }
+
+  .venue-tag {
+    font-family: var(--font-display);
+    font-size: 17px;
+    color: rgba(245,241,232,0.7);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    border-left: 1px solid rgba(245,241,232,0.2);
+    padding-left: 14px;
+  }
+
+  .gear-btn {
+    background: transparent;
+    border: 1px solid rgba(245,241,232,0.3);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(245,241,232,0.7);
+    padding: 0;
+    transition: all 0.15s;
+  }
+  .gear-btn:hover { color: var(--paper); border-color: var(--paper); }
+  .gear-btn svg { width: 15px; height: 15px; }
+
+  /* ════════════════════════════════════════════
+     SCROLLABLE BODY
+     ════════════════════════════════════════════ */
+  .scroll-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 14px 24px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-body::-webkit-scrollbar { display: none; }
+
+  /* ════════════════════════════════════════════
+     BOTTOM NAV
+     ════════════════════════════════════════════ */
+  .bottom-nav {
+    flex-shrink: 0;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.15);
+  }
+
+  .nav-btn {
+    flex: 1;
+    padding: 10px 0 12px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: rgba(245,241,232,0.55);
+    cursor: pointer;
+    font-family: var(--font-body);
+    background: transparent;
+    border: none;
+    border-top: 2px solid transparent;
+    transition: color 0.15s;
+    min-height: 56px;
+  }
+  .nav-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.75;
+  }
+  .nav-btn-label {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav-btn.active {
+    color: var(--paper);
+    border-top-color: var(--wa);
+  }
+  .nav-btn.next {
+    color: rgba(245,241,232,0.3);
+  }
+  .nav-btn.next .nav-btn-label::before {
+    content: '▸ ';
+    opacity: 0.6;
+  }
+  .nav-btn:hover:not(.active):not(.next) { color: rgba(245,241,232,0.85); }
+
+  body[data-state="s0"] .nav-btn[data-show~="s0"] { display: flex; }
+  body[data-state="s1"] .nav-btn[data-show~="s1"] { display: flex; }
+  body[data-state="s2"] .nav-btn[data-show~="s2"] { display: flex; }
+  body[data-state="s3"] .nav-btn[data-show~="s3"] { display: flex; }
+  body[data-state="s4"] .nav-btn[data-show~="s4"] { display: flex; }
+  body[data-state="paid"] .nav-btn[data-show~="paid"] { display: flex; }
+  body[data-state="paid-clear"] .nav-btn[data-show~="paid"] { display: flex; }
+  body[data-state="free"] .nav-btn[data-show~="free"] { display: flex; }
+
+  /* ════════════════════════════════════════════
+     ASCII separators & labels
+     ════════════════════════════════════════════ */
+  .ascii-sep {
+    text-align: center;
+    color: var(--line);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 12px 0 10px;
+    line-height: 1;
+  }
+
+  .ascii-label {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--ink);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    position: relative;
+    margin: 18px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    line-height: 1;
+  }
+  .ascii-label::before,
+  .ascii-label::after {
+    content: '═══════════════════════';
+    color: var(--line);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    overflow: hidden;
+    flex: 1;
+    line-height: 1;
+  }
+
+  .ascii-label.red { color: var(--red); }
+  .ascii-label.red::before,
+  .ascii-label.red::after { color: var(--red); opacity: 0.6; }
+
+  /* ════════════════════════════════════════════
+     WEEKLY DELTA WIDGET
+     ════════════════════════════════════════════ */
+  .delta-widget {
+    color: var(--paper);
+    padding: 14px 15px;
+    margin: 6px -2px 6px;
+    border: 1px solid var(--ink);
+    position: relative;
+  }
+  body[data-state="s2"] .delta-widget.paid,
+  body[data-state="s3"] .delta-widget.paid,
+  body[data-state="s4"] .delta-widget.paid,
+  body[data-state="paid"] .delta-widget.paid,
+  body[data-state="paid-clear"] .delta-widget.paid,
+  body[data-state="free"] .delta-widget.free {
+    margin-top: 0;
+  }
+  .delta-widget.free {
+    border-left: 3px solid var(--red);
+  }
+
+  .delta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+  }
+  .delta-title {
+    font-size: 16px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+  .delta-date {
+    font-size: 13px;
+    opacity: 0.55;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .delta-section { margin-bottom: 10px; }
+  .delta-section:last-child { margin-bottom: 0; }
+
+  /* Two-column layout for paid widget: TEO HIZO left, RESULTADOS right */
+  .delta-cols {
+    display: grid;
+    grid-template-columns: 1fr 1px auto;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .delta-cols .delta-section { margin-bottom: 0; }
+  .delta-cols .delta-divider {
+    background: var(--paper);
+    opacity: 0.25;
+  }
+  /* When in cols, headline stacks vertically: each metric on its own line */
+  .delta-cols .delta-headline {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 17px;
+  }
+  .delta-cols .delta-headline > span {
+    display: block;
+  }
+
+  .delta-label {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 4px;
+  }
+
+  .delta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .delta-headline {
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1.2;
+  }
+  .delta-headline .pos { color: #7ec988; }
+  .delta-headline .neg { color: #E38570; }
+
+  .delta-row {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    font-size: 12.5px;
+    line-height: 1.5;
+    opacity: 0.92;
+  }
+  .delta-row::before {
+    content: '›';
+    color: var(--wa);
+    font-weight: 700;
+  }
+  .delta-row strong { color: var(--paper); }
+
+  .delta-comp {
+    font-size: 11.5px;
+    line-height: 1.55;
+    opacity: 0.7;
+    padding-top: 8px;
+    margin-top: 10px;
+    border-top: 1px dashed rgba(245,241,232,0.15);
+  }
+  .delta-comp strong { color: var(--paper); opacity: 1; }
+
+  .delta-insight {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(245,241,232,0.2);
+  }
+  .delta-insight-label {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 4px;
+  }
+  .delta-insight-text {
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+
+  .delta-placeholder {
+    padding: 12px 14px;
+    border: 1px dashed var(--line);
+    text-align: center;
+    margin: 6px 0;
+  }
+  .delta-placeholder-label {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+  .delta-placeholder-text {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+
+  /* ════════════════════════════════════════════
+     CTAs
+     ════════════════════════════════════════════ */
+  .cta-stack { display: flex; flex-direction: column; gap: 8px; }
+
+  .cta-item {
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    padding: 12px 13px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .cta-item > .cta-title,
+  .cta-item > .cta-body,
+  .cta-item > .pending-list,
+  .cta-item > .check {
+    align-self: stretch;
+  }
+  .cta-item.primary { border-width: 1.5px; }
+
+  .cta-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.15;
+    margin-bottom: 5px;
+  }
+  .cta-body {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .cta-body:last-child { margin-bottom: 0; }
+  .cta-body strong { color: var(--ink); }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-end;
+    gap: 8px;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 9px 13px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-image 0.15s;
+  }
+  .cta-btn.secondary {
+    background: transparent;
+    background-image: none;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    text-shadow: none;
+  }
+  .cta-btn.secondary:hover {
+    background: var(--ink);
+    background-image: none;
+    color: var(--paper);
+  }
+  .cta-btn.block {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cta-item.all-clear {
+    background-color: var(--paper);
+    border: 1px dashed var(--line);
+    text-align: center;
+    padding: 16px 14px;
+    align-items: center;
+  }
+  .cta-item.all-clear .check {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--green-ok);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .cta-item.all-clear .cta-title { color: var(--ink); }
+  .cta-item.all-clear .cta-body { color: var(--ink-soft); margin-bottom: 0; }
+
+  /* Compact variant: single horizontal line, check on left of title, no body */
+  .cta-item.all-clear.compact {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    padding: 10px 14px;
+  }
+  .cta-item.all-clear.compact .check {
+    font-size: 22px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .cta-item.all-clear.compact .cta-title {
+    font-size: 13px;
+    line-height: 1.35;
+    margin-bottom: 0;
+  }
+
+  /* ════════════════════════════════════════════
+     ZONE 1 — two-block horizontal layout
+     ════════════════════════════════════════════ */
+  .z1-top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .z1-left { min-width: 0; }
+  .z1-venue {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 3px;
+  }
+  .z1-meta {
+    font-size: 10.5px;
+    color: var(--mid);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+  .z1-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+    padding-left: 14px;
+    border-left: 1px dashed var(--line);
+  }
+  .z1-rating {
+    font-family: var(--font-display);
+    font-size: 40px;
+    line-height: 0.9;
+  }
+  .z1-stars {
+    font-size: 12px;
+    color: var(--star);
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+  .z1-reviews {
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    text-align: right;
+  }
+
+  .z1-ranking { margin-bottom: 12px; }
+  .z1-ranking-label {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 2px;
+  }
+  .z1-ranking-val {
+    font-family: var(--font-display);
+    font-size: 18px;
+  }
+
+  .z1-callouts { display: flex; flex-direction: column; gap: 6px; }
+  .z1-callout {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .z1-callout-arrow {
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 14px;
+  }
+  .z1-callout.up .z1-callout-arrow { color: var(--green-ok); }
+  .z1-callout.down .z1-callout-arrow { color: var(--red); }
+  .z1-callout-label { color: var(--mid); }
+  .z1-callout-val { font-weight: 700; }
+  .z1-callout-val.up { color: var(--green-ok); }
+  .z1-callout-val.down { color: var(--red); }
+
+  body[data-state="free"] .z1-callout.down {
+    background: var(--red-pale);
+    padding: 8px 10px;
+    border-left: 2px solid var(--red);
+  }
+
+  /* ════════════════════════════════════════════
+     ZONE 2 — Competidores (new bucket model)
+     ════════════════════════════════════════════ */
+  .bucket { margin-bottom: 8px; }
+
+  .bucket-head { padding: 6px 0 4px; }
+  .bucket-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .bucket-sub {
+    font-size: 10.5px;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+    line-height: 1.35;
+  }
+
+  .comp-row {
+    border-top: 1px dashed var(--line);
+    padding: 9px 0 7px;
+    cursor: pointer;
+  }
+  .comp-row:last-child { border-bottom: 1px dashed var(--line); }
+
+  /* Venue's own row inside competencia directa — distinct treatment so
+     the owner sees their position visually in the ranking */
+  .comp-row.is-self {
+    background-color: var(--paper-2);
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 10px 8px 8px;
+    margin-left: -8px;
+    margin-right: -8px;
+    cursor: default;
+  }
+  .comp-row.is-self + .comp-row { border-top: none; }
+  .comp-row .comp-rank {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    margin-right: 6px;
+    line-height: 1;
+  }
+  .comp-row.is-self .comp-rank {
+    color: var(--ink);
+  }
+  .comp-row.is-self .comp-self-tag {
+    font-family: var(--font-body);
+    font-size: 9.5px;
+    color: var(--paper);
+    background: var(--ink);
+    padding: 1px 6px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: 4px;
+    line-height: 1.4;
+  }
+  .comp-row.is-self .comp-rating {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .comp-row.is-self .comp-expand-btn { display: none; }
+
+  .comp-main {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+  .comp-left {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .comp-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+  .comp-chips {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .comp-chip {
+    font-size: 9.5px;
+    color: var(--mid);
+    padding: 1px 6px;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    border: 1px solid var(--line);
+  }
+  .comp-chip.dist { font-weight: 700; color: var(--ink-soft); }
+  .comp-chip.price { color: var(--ink-soft); }
+
+  .social-icons {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .social-icons svg {
+    width: 13px; height: 13px;
+    color: var(--mid);
+  }
+
+  .comp-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .comp-rating {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .comp-rating.higher { color: var(--red); }
+  .comp-rating.lower { color: var(--green-ok); }
+  .comp-trend {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .comp-trend.up { background: var(--red-pale); color: var(--red); }
+  .comp-trend.flat { background: var(--paper-2); color: var(--mid); }
+  .comp-trend.down { background: var(--green-pale); color: var(--green-ok); }
+
+  .comp-expand-btn {
+    background: transparent;
+    border: none;
+    color: var(--mid);
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 13px;
+    line-height: 1;
+    transition: transform 0.2s, color 0.15s;
+  }
+  .comp-row.open .comp-expand-btn { transform: rotate(180deg); color: var(--ink); }
+
+  /* Trend arrows hidden until historical data exists */
+  .comp-trend { display: none; }
+  body[data-state="paid"] .comp-trend,
+  body[data-state="paid-clear"] .comp-trend,
+  body[data-state="free"] .comp-trend { display: inline-block; }
+
+  body[data-state="free"] .comp-row.widening { background: rgba(166,44,20,0.05); }
+
+  .comp-detail {
+    display: none;
+    padding: 10px 2px 6px;
+    margin-top: 4px;
+    border-top: 1px dashed var(--line);
+  }
+  .comp-row.open .comp-detail { display: block; }
+
+  .detail-block { margin-bottom: 12px; }
+  .detail-block:last-child { margin-bottom: 0; }
+
+  .detail-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .detail-title svg { width: 12px; height: 12px; }
+
+  .google-detail {
+    display: grid;
+    grid-template-columns: 1fr 115px;
+    gap: 10px;
+    align-items: center;
+  }
+  .g-summary {
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .g-summary strong { color: var(--ink); }
+
+  .g-dist {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .g-dist-row {
+    display: grid;
+    grid-template-columns: 12px 1fr;
+    gap: 6px;
+    align-items: center;
+    font-size: 10px;
+    color: var(--mid);
+    line-height: 1;
+  }
+  .g-dist-stars {
+    text-align: right;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .g-dist-bar {
+    height: 6px;
+    background: var(--paper-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .g-dist-bar .fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--star);
+  }
+
+  .social-detail {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .social-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+  }
+  .social-detail-item svg { width: 11px; height: 11px; }
+  .social-detail-item strong { color: var(--ink); }
+
+  /* ════════════════════════════════════════════
+     FOREIGN PATRON WIDGET
+     ════════════════════════════════════════════ */
+  .fp-widget {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    margin: 8px 0;
+  }
+  .fp-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+  .fp-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .fp-ratio {
+    font-family: var(--font-display);
+    font-size: 30px;
+    line-height: 1;
+  }
+  .fp-vs {
+    font-size: 11px;
+    color: var(--mid);
+    text-align: right;
+    line-height: 1.4;
+  }
+  .fp-vs strong { color: var(--ink); }
+  .fp-langs {
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+
+  /* ════════════════════════════════════════════
+     STATE VISIBILITY
+     ════════════════════════════════════════════ */
+  .delta-widget, .delta-placeholder { display: none; }
+  body[data-state="s2"] .delta-widget.paid,
+  body[data-state="s3"] .delta-widget.paid,
+  body[data-state="s4"] .delta-widget.paid,
+  body[data-state="paid"] .delta-widget.paid,
+  body[data-state="paid-clear"] .delta-widget.paid,
+  body[data-state="free"] .delta-widget.free { display: block; }
+
+  .action-slot-post-delta, .action-slot-post-zone2 { display: none; }
+  body[data-state="s0"] .action-slot-post-zone2,
+  body[data-state="s1"] .action-slot-post-zone2 { display: block; }
+  body[data-state="s2"] .action-slot-post-delta,
+  body[data-state="s3"] .action-slot-post-delta,
+  body[data-state="s4"] .action-slot-post-delta,
+  body[data-state="paid"] .action-slot-post-delta,
+  body[data-state="paid-clear"] .action-slot-post-delta,
+  body[data-state="free"] .action-slot-post-delta { display: block; }
+
+  .cta-s0, .cta-s1, .cta-s2, .cta-s3, .cta-s4, .cta-paid-pending, .cta-paid-clear, .cta-free { display: none; }
+  /* cta-items (card containers) use flex layout so flex-end right-aligns the button */
+  body[data-state="s0"] .cta-s0,
+  body[data-state="s1"] .cta-s1,
+  body[data-state="s2"] .cta-s2,
+  body[data-state="s3"] .cta-s3,
+  body[data-state="s4"] .cta-s4,
+  body[data-state="paid-clear"] .cta-paid-clear,
+  body[data-state="free"] .cta-free { display: flex; }
+  /* cta-paid-pending is a wrapper containing a label + stack of tasks; needs block */
+  body[data-state="paid"] .cta-paid-pending { display: block; }
+
+  .secondary-actions { display: none; }
+  body[data-state="paid"] .secondary-actions,
+  body[data-state="paid-clear"] .secondary-actions { display: block; }
+
+  /* ════════════════════════════════════════════
+     PAGE SWITCHING
+     ════════════════════════════════════════════ */
+  .page { display: none; }
+
+  /* Tighten first-of-page headroom. The scroll-body's 8px top padding
+     already provides breathing room — the first visible header on each
+     page should not add more on top. Uses :first-of-type so it works
+     even when earlier siblings are hidden by state. */
+  .page > .ascii-label:first-of-type,
+  .page > .comp-pulse:first-of-type,
+  .page > .collapsible:first-of-type > .collapsible-trigger > .ascii-label,
+  .page > .collapsible:first-of-type > .collapsible-trigger > .settings-group-title {
+    margin-top: 0;
+  }
+  /* On Settings, the back button is the absolute first child; the ascii-label
+     after it should sit close, not 18px down */
+  .page-settings > .ascii-label {
+    margin-top: 6px;
+  }
+
+  /* TU POSICIÓN ascii-label is structurally the 4th DIV child of page-resumen
+     (after delta-widget paid, delta-widget free, action-slot-post-delta).
+     :first-of-type doesn't help here because it checks tag type, not class.
+     In S0/S1 all preceding siblings are hidden, so TU POSICIÓN is the first
+     visible header — kill its margin-top in those states only. */
+  body[data-state="s0"] .page-resumen > .ascii-label.first-on-page-when-empty,
+  body[data-state="s1"] .page-resumen > .ascii-label.first-on-page-when-empty {
+    margin-top: 0;
+  }
+  body[data-page="resumen"] .page-resumen { display: block; }
+  body[data-page="reviews"] .page-reviews { display: block; }
+
+  /* Nav button highlight follows data-page */
+  body[data-page="resumen"] .nav-btn[data-page-link="resumen"],
+  body[data-page="reviews"] .nav-btn[data-page-link="reviews"] {
+    color: var(--paper);
+    border-top-color: var(--wa);
+  }
+  body[data-page="resumen"] .nav-btn:not([data-page-link="resumen"]),
+  body[data-page="reviews"] .nav-btn:not([data-page-link="reviews"]) {
+    /* reset — not active */
+  }
+
+  /* ════════════════════════════════════════════
+     REVIEWS PAGE — Google summary header
+     ════════════════════════════════════════════ */
+  .g-summary-block {
+    padding: 4px 0 12px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .g-summary-top {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .g-summary-rating-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .g-big-rating {
+    font-family: var(--font-display);
+    font-size: 44px;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+  .g-big-stars {
+    font-size: 13px;
+    color: var(--star);
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .g-big-count {
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+
+  .g-summary-dist {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .g-summary-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+  }
+  .g-highlight-row {
+    display: flex;
+    gap: 8px;
+    font-size: 11.5px;
+    line-height: 1.55;
+  }
+  .g-highlight-label {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    flex-shrink: 0;
+    min-width: 70px;
+    padding-top: 2px;
+  }
+  .g-highlight-label.pos { color: var(--green-ok); }
+  .g-highlight-label.neg { color: var(--red); }
+  .g-highlight-text {
+    color: var(--ink-soft);
+    flex: 1;
+  }
+  .g-highlight-text strong { color: var(--ink); }
+
+  /* ════════════════════════════════════════════
+     REVIEWS — mode chip
+     ════════════════════════════════════════════ */
+  .mode-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.55) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .mode-chip:hover { border-color: var(--ink); }
+  .mode-chip-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mode-chip-label {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .mode-chip-value {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .mode-chip-edit {
+    margin-left: auto;
+    color: var(--wa);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .mode-chip-tagline {
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+
+  /* ════════════════════════════════════════════
+     REVIEW ROW
+     ════════════════════════════════════════════ */
+  .review-row {
+    border-top: 1px dashed var(--line);
+    padding: 12px 0 10px;
+  }
+  .review-row:last-child { border-bottom: 1px dashed var(--line); }
+
+  .review-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .review-left {
+    min-width: 0;
+    flex: 1;
+  }
+  .review-author {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .review-meta {
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+  .review-stars {
+    font-size: 12px;
+    color: var(--star);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .review-stars.low { color: var(--red); }
+
+  .review-text {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+  .review-text.truncated {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Teo's proposed draft (on unanswered rows) */
+  .teo-draft {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.55) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--wa);
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  .teo-draft-label {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--wa);
+    margin-bottom: 4px;
+  }
+  .teo-draft-text {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* Teo's posted response (on answered rows) */
+  .teo-response {
+    border-left: 2px solid var(--line);
+    padding: 6px 0 6px 10px;
+    margin-top: 6px;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .teo-response-label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 3px;
+  }
+  .teo-response-label.owner { color: var(--amber); }
+
+  .review-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Queued (paid-clear) row — no action, quiet style */
+  .review-row.queued .teo-draft {
+    border-left-color: var(--mid);
+  }
+  .review-row.queued .teo-draft-label {
+    color: var(--mid);
+  }
+  .queue-note {
+    font-size: 10.5px;
+    color: var(--mid);
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+
+  /* Filter bar for answered reviews */
+  .filter-bar {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin: 10px 0 6px;
+  }
+  .filter-chip {
+    font-family: var(--font-body);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-chip:hover { border-color: var(--ink); color: var(--ink); }
+  .filter-chip.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .filter-chip .star {
+    color: var(--star);
+    margin-left: 2px;
+  }
+  .filter-chip.active .star { color: var(--star); }
+
+  .filter-row {
+    margin-bottom: 8px;
+  }
+  .filter-row-label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 2px;
+  }
+
+  /* FOMO urgent header */
+  .urgent-banner {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, #3a0f08 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+    color: var(--paper);
+    padding: 10px 12px;
+    margin: 4px 0 10px;
+    text-shadow: 0 0 1px rgba(0,0,0,0.9);
+  }
+  .urgent-banner-label {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 3px;
+  }
+  .urgent-banner-text {
+    font-size: 12px;
+    line-height: 1.45;
+    opacity: 0.92;
+  }
+  .urgent-banner-text strong { color: var(--paper); }
+
+  /* FOMO per-row activate CTA */
+  .fomo-row-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-top: 6px;
+    border: 1px dashed var(--red);
+    background-color: var(--red-pale);
+  }
+  .fomo-row-cta-text {
+    font-size: 11px;
+    color: var(--red);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .fomo-row-cta-btn {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, var(--wa) 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+    color: #fff;
+    text-shadow: 0 0 1px rgba(0,0,0,0.9);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* All-clear empty state for reviews — compact inline */
+  .reviews-all-clear {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px dashed var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.55) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin: 4px 0 14px;
+  }
+  .reviews-all-clear .check {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--green-ok);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .reviews-all-clear-text {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .reviews-all-clear-sub {
+    font-size: 10.5px;
+    color: var(--mid);
+    line-height: 1.3;
+    flex: 1;
+  }
+
+  /* ════════════════════════════════════════════
+     REVIEWS — visibility per state
+     ════════════════════════════════════════════ */
+  .mode-chip, .filter-row, .rev-answered, .rev-unanswered, .rev-showcase,
+  .rev-queued, .rev-fomo-top, .reviews-all-clear { display: none; }
+
+  /* S0 — showcase only */
+  body[data-state="s0"][data-page="reviews"] .rev-showcase { display: block; }
+
+  /* S1–S4, PAID — full unanswered + answered + mode chip (from S2 onward) */
+  body[data-state="s2"][data-page="reviews"] .mode-chip,
+  body[data-state="s3"][data-page="reviews"] .mode-chip,
+  body[data-state="s4"][data-page="reviews"] .mode-chip,
+  body[data-state="paid"][data-page="reviews"] .mode-chip,
+  body[data-state="paid-clear"][data-page="reviews"] .mode-chip { display: flex; }
+
+  body[data-state="s1"][data-page="reviews"] .rev-unanswered,
+  body[data-state="s2"][data-page="reviews"] .rev-unanswered,
+  body[data-state="s3"][data-page="reviews"] .rev-unanswered,
+  body[data-state="s4"][data-page="reviews"] .rev-unanswered,
+  body[data-state="paid"][data-page="reviews"] .rev-unanswered { display: block; }
+
+  body[data-state="s1"][data-page="reviews"] .rev-answered,
+  body[data-state="s2"][data-page="reviews"] .rev-answered,
+  body[data-state="s3"][data-page="reviews"] .rev-answered,
+  body[data-state="s4"][data-page="reviews"] .rev-answered,
+  body[data-state="paid"][data-page="reviews"] .rev-answered,
+  body[data-state="paid-clear"][data-page="reviews"] .rev-answered { display: block; }
+
+  body[data-state="s1"][data-page="reviews"] .filter-row,
+  body[data-state="s2"][data-page="reviews"] .filter-row,
+  body[data-state="s3"][data-page="reviews"] .filter-row,
+  body[data-state="s4"][data-page="reviews"] .filter-row,
+  body[data-state="paid"][data-page="reviews"] .filter-row,
+  body[data-state="paid-clear"][data-page="reviews"] .filter-row { display: block; }
+
+  /* PAID all-clear: queued list replaces unanswered; all-clear badge on top */
+  body[data-state="paid-clear"][data-page="reviews"] .rev-queued { display: block; }
+  body[data-state="paid-clear"][data-page="reviews"] .reviews-all-clear { display: block; }
+
+  /* FREE FOMO: top-3 urgent + full unanswered list below (no answered section) */
+  body[data-state="free"][data-page="reviews"] .rev-fomo-top { display: block; }
+  body[data-state="free"][data-page="reviews"] .rev-unanswered { display: block; }
+
+  /* ════════════════════════════════════════════
+     CALENDAR — post expansion panel (inline)
+     ════════════════════════════════════════════ */
+  .post-expand {
+    border: 1.5px solid var(--ink);
+    background-color: var(--paper);
+    margin-bottom: 10px;
+    padding: 0;
+    animation: expandFade 0.2s ease;
+  }
+  @keyframes expandFade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .post-expand-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .post-expand-status {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .post-expand-status.scheduled { color: var(--ink); }
+  .post-expand-status.suggested { color: var(--wa); }
+  .post-expand-status.published { color: var(--mid); }
+
+  .post-expand-close {
+    background: transparent;
+    border: none;
+    color: var(--mid);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+  }
+  .post-expand-close:hover { color: var(--ink); }
+
+  .post-expand-img {
+    aspect-ratio: 1 / 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.45);
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background-image:
+      radial-gradient(circle at 30% 40%, rgba(255,255,255,0.15) 0, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(0,0,0,0.25) 0, transparent 50%),
+      linear-gradient(135deg, #d4a04a 0%, #a46a0a 60%, #6e4200 100%);
+  }
+  .post-expand-img.alt {
+    background-image:
+      radial-gradient(circle at 40% 30%, rgba(255,255,255,0.1) 0, transparent 40%),
+      linear-gradient(135deg, #7a5d3e 0%, #4a3320 60%, #2d1e10 100%);
+  }
+  .post-expand-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at center, rgba(0,0,0,0.25) 0.6px, transparent 0.8px);
+    background-size: 2.5px 2.5px;
+    pointer-events: none;
+  }
+  .post-expand-img-label {
+    position: relative;
+    z-index: 1;
+    background: rgba(0,0,0,0.4);
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  .post-expand-body {
+    padding: 10px 12px;
+  }
+  .post-expand-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .post-expand-meta svg { width: 13px; height: 13px; color: var(--ink); }
+  .post-expand-date {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-left: auto;
+  }
+
+  .post-expand-caption {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin-bottom: 10px;
+    min-height: 60px;
+  }
+  .post-expand-caption[contenteditable="true"]:focus {
+    outline: 2px solid var(--wa);
+    outline-offset: -2px;
+  }
+
+  .post-expand-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .post-expand-actions .cta-btn {
+    align-self: auto;
+  }
+
+  /* Batch approve bar */
+  .cal-batch-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-top: 12px;
+    border: 1.5px solid var(--ink);
+    background-color: var(--paper);
+  }
+  .cal-batch-info {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .cal-batch-info strong {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* Day hover/pressable for better affordance */
+  .cal-day:has(.cal-post:not(.empty):not(.empty-fomo)) {
+    cursor: pointer;
+  }
+  .cal-day:has(.cal-post:not(.empty):not(.empty-fomo)):hover {
+    border-color: var(--ink);
+  }
+  .cal-day.selected {
+    border-color: var(--ink);
+    border-width: 1.5px;
+  }
+
+  /* Create post button on empty days */
+  .cal-day-create {
+    flex: 1;
+    min-height: 0;
+    background: transparent;
+    border: 1px dashed rgba(18,140,126,0.3);
+    color: rgba(18,140,126,0.5);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  .cal-day-create:hover {
+    border-color: var(--wa);
+    color: var(--wa);
+  }
+  .cal-day.past .cal-day-create { display: none; }
+
+  /* Batch actions section at bottom of calendar */
+  .cal-batch-section {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+  }
+
+  /* ════════════════════════════════════════════
+     CHATBOT PAGE
+     ════════════════════════════════════════════ */
+  body[data-page="chatbot"] .page-chatbot { display: block; }
+  body[data-page="chatbot"] .nav-btn[data-page-link="chatbot"] {
+    color: var(--paper);
+    border-top-color: var(--wa);
+  }
+
+  /* Chatbot demo transcript */
+  .chat-transcript {
+    border: 1px solid var(--line);
+    padding: 10px;
+    margin-bottom: 12px;
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+  }
+  .chat-transcript-head {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .chat-msg {
+    max-width: 82%;
+    padding: 7px 10px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    line-height: 1.4;
+    word-wrap: break-word;
+  }
+  .chat-msg.customer {
+    background: var(--paper-2);
+    color: var(--ink);
+    border-radius: 0 8px 8px 8px;
+    align-self: flex-start;
+    border: 1px solid var(--line);
+  }
+  .chat-msg.bot {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, var(--wa) 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+    color: #fff;
+    border-radius: 8px 0 8px 8px;
+    align-self: flex-end;
+    margin-left: auto;
+    text-shadow: 0 0 1px rgba(0,0,0,0.9);
+  }
+  .chat-msg-meta {
+    font-size: 9.5px;
+    color: var(--mid);
+    margin-bottom: 2px;
+    letter-spacing: 0.04em;
+  }
+  .chat-msg.bot .chat-msg-meta {
+    text-align: right;
+    color: var(--wa);
+  }
+  .chat-msgs {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .chat-divider {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 9px;
+    color: var(--light);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 6px 0;
+    opacity: 0.6;
+  }
+
+  /* Chatbot stats block */
+  .chatbot-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .stat-card {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+  }
+  .stat-label {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 26px;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+  .stat-sub {
+    font-size: 10px;
+    color: var(--mid);
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  .chatbot-topics {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin-bottom: 14px;
+  }
+  .topic-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--line);
+    font-size: 12px;
+  }
+  .topic-row:last-child { border-bottom: none; }
+  .topic-label { color: var(--ink-soft); }
+  .topic-count {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  /* WhatsApp Business link block */
+  .wa-biz-link {
+    padding: 12px 14px;
+    border: 1.5px solid var(--ink);
+    margin-bottom: 16px;
+    background-color: var(--paper);
+  }
+  .wa-biz-link-head {
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    line-height: 1.1;
+  }
+  .wa-biz-link-sub {
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .wa-biz-link-hint {
+    font-size: 10px;
+    color: var(--mid);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* Config sections */
+  .cfg-section {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .cfg-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .cfg-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+  .cfg-status {
+    font-family: var(--font-body);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  .cfg-status.active {
+    background: var(--green-pale);
+    color: var(--green-ok);
+    border: 1px solid var(--green-ok);
+  }
+  .cfg-status.inactive {
+    background: var(--paper-2);
+    color: var(--mid);
+    border: 1px solid var(--line);
+  }
+  .cfg-desc {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.45;
+    margin-bottom: 8px;
+  }
+  .cfg-action {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Chatbot demo CTA (preview link box) */
+  .demo-link-box {
+    padding: 12px 14px;
+    border: 1px dashed var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin-bottom: 14px;
+  }
+  .demo-link-head {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .demo-link-desc {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  /* Chatbot state visibility */
+  .cbot-s0, .cbot-s1, .cbot-s2, .cbot-s3, .cbot-live, .cbot-free { display: none; }
+  body[data-state="s0"][data-page="chatbot"] .cbot-s0 { display: block; }
+  body[data-state="s1"][data-page="chatbot"] .cbot-s0 { display: block; }
+  body[data-state="s2"][data-page="chatbot"] .cbot-s0 { display: block; }
+  body[data-state="s3"][data-page="chatbot"] .cbot-s3 { display: block; }
+  body[data-state="s4"][data-page="chatbot"] .cbot-live { display: block; }
+  body[data-state="paid"][data-page="chatbot"] .cbot-live { display: block; }
+  body[data-state="paid-clear"][data-page="chatbot"] .cbot-live { display: block; }
+  body[data-state="free"][data-page="chatbot"] .cbot-free { display: block; }
+
+  /* ════════════════════════════════════════════
+     FAQ PAGE (Pregúntale a Teo)
+     ════════════════════════════════════════════ */
+  body[data-page="faq"] .page-faq { display: block; }
+  body[data-page="faq"] .nav-btn[data-page-link="faq"] {
+    color: var(--paper);
+    border-top-color: var(--wa);
+  }
+
+  .faq-intro {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin-bottom: 14px;
+  }
+  .faq-intro strong { color: var(--ink); }
+
+  .faq-group {
+    margin-bottom: 14px;
+  }
+  .faq-group-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .faq-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 12px;
+    background: transparent;
+    border: 1px solid var(--line);
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: left;
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: all 0.15s;
+    text-decoration: none;
+    line-height: 1.4;
+  }
+  .faq-btn:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  /* ════════════════════════════════════════════
+     SETTINGS PAGE
+     ════════════════════════════════════════════ */
+  body[data-page="settings"] .page-settings { display: block; }
+
+  .settings-group {
+    margin-bottom: 16px;
+  }
+  .settings-group-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-top: none;
+    background-color: var(--paper);
+  }
+  .setting-row:first-of-type {
+    border-top: 1px solid var(--line);
+  }
+
+  .setting-row.tappable {
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .setting-row.tappable:hover {
+    background-color: var(--paper-2);
+  }
+
+  .setting-left {
+    min-width: 0;
+    flex: 1;
+  }
+  .setting-label {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .setting-value {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    margin-top: 3px;
+  }
+  .setting-value.mono {
+    font-family: var(--font-body);
+    letter-spacing: 0.02em;
+  }
+
+  .setting-right {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .setting-arrow {
+    color: var(--wa);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .setting-chip {
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid;
+    line-height: 1.4;
+  }
+  .setting-chip.active {
+    color: var(--green-ok);
+    background: var(--green-pale);
+    border-color: var(--green-ok);
+  }
+  .setting-chip.inactive {
+    color: var(--mid);
+    background: var(--paper-2);
+    border-color: var(--line);
+  }
+
+  /* Toggle switch */
+  .toggle {
+    width: 36px;
+    height: 20px;
+    border-radius: 20px;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--mid);
+    transition: all 0.15s;
+  }
+  .toggle.on {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, var(--wa) 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+    border-color: var(--wa);
+  }
+  .toggle.on::after {
+    left: auto;
+    right: 1px;
+    background: var(--paper);
+  }
+
+  /* Referral banner */
+  .ref-banner {
+    padding: 12px 14px;
+    border: 1.5px solid var(--ink);
+    background-color: var(--paper);
+    margin-bottom: 10px;
+  }
+  .ref-code {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .ref-url {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    word-break: break-all;
+    line-height: 1.4;
+  }
+  .ref-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    margin-bottom: 10px;
+  }
+  .ref-stat-label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    line-height: 1.1;
+  }
+  .ref-stat-value {
+    font-family: var(--font-display);
+    font-size: 22px;
+    line-height: 1;
+    margin-top: 3px;
+    color: var(--ink);
+  }
+
+  .ref-how {
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 8px 10px;
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    border: 1px dashed var(--line);
+  }
+  .ref-how strong { color: var(--ink); }
+
+  /* Billing invoice row */
+  .invoice-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-top: none;
+  }
+  .invoice-row:first-of-type {
+    border-top: 1px solid var(--line);
+  }
+  .invoice-date {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .invoice-amount {
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .invoice-download {
+    color: var(--wa);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    padding: 4px 8px;
+    border: 1px solid var(--wa);
+  }
+  .invoice-download:hover {
+    background: var(--wa);
+    color: #fff;
+  }
+
+  /* Settings back button */
+  .settings-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding: 4px 0;
+    cursor: pointer;
+    margin-bottom: 8px;
+  }
+  .settings-back:hover { color: var(--ink); }
+
+  /* Danger zone */
+  .danger-section {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--red);
+  }
+  .danger-label {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .danger-row {
+    border-color: var(--red-pale);
+  }
+  .danger-row .setting-arrow { color: var(--red); }
+
+  /* ════════════════════════════════════════════
+     PAGE SWITCHING — add calendar
+     ════════════════════════════════════════════ */
+  body[data-page="calendar"] .page-calendar { display: block; }
+  body[data-page="calendar"] .nav-btn[data-page-link="calendar"] {
+    color: var(--paper);
+    border-top-color: var(--wa);
+  }
+
+  /* ════════════════════════════════════════════
+     CALENDAR — competitor pulse strip
+     ════════════════════════════════════════════ */
+  .comp-pulse {
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.55) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin: 4px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .comp-pulse-label {
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .comp-pulse-list {
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.45;
+    flex: 1;
+    min-width: 0;
+  }
+  .comp-pulse-list strong { color: var(--ink); }
+
+  /* ════════════════════════════════════════════
+     CALENDAR — post preview (S1 — single post)
+     ════════════════════════════════════════════ */
+  .post-preview {
+    border: 1px solid var(--ink);
+    padding: 0;
+    margin-bottom: 12px;
+  }
+  .post-preview-img {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(135deg, #d4a04a 0%, #a46a0a 60%, #6e4200 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.45);
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    /* Halftone over the image for the thermal look */
+    background-image:
+      radial-gradient(circle at 30% 40%, rgba(255,255,255,0.15) 0, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(0,0,0,0.25) 0, transparent 50%),
+      linear-gradient(135deg, #d4a04a 0%, #a46a0a 60%, #6e4200 100%);
+  }
+  .post-preview-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at center, rgba(0,0,0,0.25) 0.6px, transparent 0.8px);
+    background-size: 2.5px 2.5px;
+    pointer-events: none;
+  }
+  .post-preview-img-label {
+    position: relative;
+    z-index: 1;
+    background: rgba(0,0,0,0.4);
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  .post-preview-body {
+    padding: 10px 12px;
+  }
+  .post-preview-platforms {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .post-preview-platforms svg { width: 13px; height: 13px; color: var(--ink); }
+  .post-preview-date {
+    font-family: var(--font-display);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-left: auto;
+  }
+  .post-preview-caption {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ════════════════════════════════════════════
+     CALENDAR — month grid
+     ════════════════════════════════════════════ */
+  .cal-month {
+    margin-bottom: 14px;
+  }
+  .cal-month-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .cal-month-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .cal-month-nav {
+    display: flex;
+    gap: 4px;
+  }
+  .cal-nav-btn {
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--mid);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1;
+  }
+  .cal-nav-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: center;
+    padding-bottom: 4px;
+    line-height: 1;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-day {
+    aspect-ratio: 1 / 1.1;
+    background-color: var(--paper);
+    border: 1px solid var(--line);
+    padding: 3px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    min-width: 0;
+  }
+  .cal-day.outside {
+    opacity: 0.25;
+  }
+  .cal-day-num {
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--mid);
+    line-height: 1;
+    text-align: right;
+  }
+  .cal-day.today .cal-day-num {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .cal-day.today {
+    border-color: var(--ink);
+    border-width: 1.5px;
+  }
+
+  /* Post chip inside a day */
+  .cal-post {
+    flex: 1;
+    min-height: 0;
+    border: 1px solid transparent;
+    padding: 1px 3px;
+    font-family: var(--font-body);
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    text-align: center;
+    word-break: break-word;
+    overflow: hidden;
+  }
+
+  /* ═══ Calendar visual hierarchy (v2) — suggested = loudest (action), scheduled = mid, published = quietest (history) ═══ */
+
+  /* Published — quietest, faded into history */
+  .cal-post.published {
+    background-color: var(--paper-2);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.28) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    color: var(--mid);
+    border: 1px solid var(--line);
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+  /* Scheduled — mid-weight, clean & decisive (done, will run) */
+  .cal-post.scheduled {
+    background-color: var(--paper);
+    color: var(--ink);
+    border: 1.25px solid var(--ink);
+  }
+
+  /* Suggested — LOUDEST (this is the action surface) */
+  .cal-post.suggested {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.45) 0.6px, transparent 0.85px);
+    background-size: 1.75px 1.75px;
+    color: var(--ink);
+    border: 1.5px dashed var(--ink);
+    font-weight: 500;
+    position: relative;
+  }
+  .cal-post.suggested::after {
+    content: '✱';
+    position: absolute;
+    top: 1px;
+    right: 2px;
+    font-size: 9px;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .cal-post.empty {
+    background: transparent;
+    border: none;
+  }
+
+  /* FOMO calendar — owner's days are empty with a faint "—" */
+  .cal-post.empty-fomo {
+    background: transparent;
+    border: 1px dashed rgba(166,44,20,0.25);
+    color: rgba(166,44,20,0.4);
+    font-size: 10px;
+  }
+
+  /* Legend */
+  .cal-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 0 4px;
+    font-size: 10px;
+    color: var(--mid);
+  }
+  .cal-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cal-legend-swatch {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .cal-legend-swatch.published {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.55) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    border: 1px solid var(--line);
+  }
+  .cal-legend-swatch.scheduled {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, #0a0a0a 1.0px, transparent 1.15px);
+    background-size: 1.75px 1.75px;
+    border: 1px solid var(--ink);
+  }
+  .cal-legend-swatch.suggested {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    border: 1px dashed var(--line);
+  }
+
+  /* Empty calendar hero (S0) */
+  .cal-empty-hero {
+    padding: 20px 16px;
+    border: 1px dashed var(--line);
+    text-align: center;
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at center, rgba(26,26,26,0.55) 0.55px, transparent 0.75px);
+    background-size: 1.75px 1.75px;
+    margin: 4px 0 12px;
+  }
+  .cal-empty-label {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+  .cal-empty-sub {
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* ════════════════════════════════════════════
+     CALENDAR — visibility per state
+     ════════════════════════════════════════════ */
+  .cal-s0, .cal-s1, .cal-s2, .cal-s3, .cal-s4, .cal-paid, .cal-free { display: none; }
+
+  /* S0: next-to-unlock preview only (paper hero) */
+  body[data-state="s0"][data-page="calendar"] .cal-s0 { display: block; }
+  /* S1: single post preview */
+  body[data-state="s1"][data-page="calendar"] .cal-s1 { display: block; }
+  /* S2: month view with 2 posts/week proposal */
+  body[data-state="s2"][data-page="calendar"] .cal-s2 { display: block; }
+  /* S3–S4: full month view, locked + suggested mix */
+  body[data-state="s3"][data-page="calendar"] .cal-s3 { display: block; }
+  body[data-state="s4"][data-page="calendar"] .cal-s4 { display: block; }
+  /* PAID: full month view (live) */
+  body[data-state="paid"][data-page="calendar"] .cal-paid { display: block; }
+  body[data-state="paid-clear"][data-page="calendar"] .cal-paid { display: block; }
+  /* FREE: empty-own-grid FOMO with pulse on top */
+  body[data-state="free"][data-page="calendar"] .cal-free { display: block; }
+
+  /* ════════════════════════════════════════════
+     COLLAPSIBLE SECTION SYSTEM
+     Sections collapsed by default; tap header to expand.
+     Reset to collapsed when changing tab/state.
+     ════════════════════════════════════════════ */
+
+  .collapsible {
+    margin-bottom: 14px;
+  }
+
+  .collapsible-trigger {
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: inherit;
+    font: inherit;
+    color: inherit;
+  }
+  .collapsible-trigger:active { opacity: 0.85; }
+
+  /* Preview line shown under the section header when collapsed.
+     Style differs slightly depending on the wrapped header type. */
+  .collapsible-preview {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-top: -6px;
+    margin-bottom: 4px;
+    padding: 0 12px;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+  }
+  .collapsible-preview .preview-arrow {
+    font-family: var(--font-display);
+    color: var(--ink);
+    margin-left: 8px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    display: inline-block;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 1px 7px 2px;
+    line-height: 1.25;
+    vertical-align: middle;
+    transform: translateY(-1px);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Settings groups: their headers are left-aligned, so preview aligns left too */
+  .collapsible.settings-group .collapsible-preview,
+  .collapsible.danger-section .collapsible-preview,
+  .collapsible.bucket-collapsible .collapsible-preview {
+    text-align: left;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  /* Bucket-collapsible — the OTROS COMPETIDORES sub-section. The trigger
+     contains a bucket-head (title + sub) followed by a preview line. When
+     collapsed, preview shows the venue names + abrir chip. */
+  .collapsible.bucket-collapsible .collapsible-trigger {
+    display: block;
+  }
+  .collapsible.bucket-collapsible .collapsible-preview {
+    padding: 4px 0 6px;
+    border-bottom: 1px dashed var(--line);
+    color: var(--ink-soft);
+    font-size: 11.5px;
+  }
+
+  /* Hide body when collapsed; hide preview when expanded */
+  .collapsible[data-expanded="false"] .collapsible-body { display: none; }
+  .collapsible[data-expanded="true"]  .collapsible-preview { display: none; }
+
+  /* When expanded, append a small "cerrar" pill to the section header.
+     Styled identically to the preview-arrow chip below for consistency. */
+  .collapsible[data-expanded="true"] .collapsible-trigger .ascii-label::after,
+  .collapsible[data-expanded="true"] .collapsible-trigger .settings-group-title::after,
+  .collapsible[data-expanded="true"] .collapsible-trigger .danger-label::after,
+  .collapsible[data-expanded="true"] .collapsible-trigger .delta-insight-label::after,
+  .collapsible[data-expanded="true"] .collapsible-trigger .bucket-title::after {
+    content: 'cerrar ↑';
+    font-family: var(--font-display);
+    color: var(--ink);
+    margin-left: 8px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 1px 7px 2px;
+    line-height: 1.25;
+    text-transform: uppercase;
+    vertical-align: middle;
+    transform: translateY(-1px);
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  /* settings-group / danger-section inside a collapsible: title is the trigger */
+  .collapsible .settings-group-title,
+  .collapsible .danger-label {
+    cursor: pointer;
+  }
+
+  /* Visual hierarchy refinement — bump ascii-label dash visibility to make
+     major-zone boundaries clearer without consuming extra vertical space */
+  .ascii-label::before,
+  .ascii-label::after {
+    font-size: 11px;
+    color: var(--ink-soft);
+    opacity: 0.55;
+  }
+  .ascii-label.red::before,
+  .ascii-label.red::after {
+    opacity: 0.55;
+  }
+
+</style>
+</head>
+<body data-state="s0" data-page="resumen">
+
+<div class="lab">
+
+  <!-- ═══════════ LAB CONTROLS ═══════════ -->
+  <div class="lab-header">
+    <div class="lab-header-inner">
+      <div class="state-switcher">
+        <button class="state-btn active" data-target="s0">S0</button>
+        <button class="state-btn" data-target="s1">S1</button>
+        <button class="state-btn" data-target="s2">S2</button>
+        <button class="state-btn" data-target="s3">S3</button>
+        <button class="state-btn" data-target="s4">S4</button>
+        <button class="state-btn" data-target="paid">PAID · pending</button>
+        <button class="state-btn" data-target="paid-clear">PAID · all clear</button>
+        <button class="state-btn" data-target="free">FREE · FOMO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ PHONE ═══════════ -->
+  <div class="phone">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="brand">teo.chat</div>
+        <div class="venue-tag">Taberna del Ángel</div>
+      </div>
+      <button class="gear-btn" aria-label="Ajustes" onclick="document.body.setAttribute('data-page','settings'); document.querySelector('.scroll-body').scrollTop=0;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ═══════════ SCROLLABLE BODY ═══════════ -->
+    <div class="scroll-body">
+
+      <!-- ═══════════ PAGE: RESUMEN (homepage) ═══════════ -->
+      <div class="page page-resumen">
+
+      <!-- Weekly delta -->
+      <div class="delta-widget paid">
+        <div class="delta-header">
+          <div class="delta-title">ESTA SEMANA</div>
+          <div class="delta-date">Sem. 15 · Abr</div>
+        </div>
+        <div class="delta-cols">
+          <div class="delta-section">
+            <div class="delta-label">TEO HIZO</div>
+            <div class="delta-list">
+              <div class="delta-row">Respondió <strong>8 reseñas</strong></div>
+              <div class="delta-row">Publicó <strong>3 posts</strong> (IG + FB)</div>
+              <div class="delta-row">Atendió <strong>12 conversaciones</strong></div>
+            </div>
+          </div>
+          <div class="delta-divider"></div>
+          <div class="delta-section">
+            <div class="delta-label">RESULTADOS</div>
+            <div class="delta-headline">
+              <span class="pos">+0.1 rating</span>
+              <span class="pos">+3 reseñas</span>
+            </div>
+          </div>
+        </div>
+        <div class="delta-comp">
+          Bar La Paloma respondió 12 · tú <strong>8 con Teo</strong>
+        </div>
+      </div>
+
+      <div class="delta-widget free">
+        <div class="delta-header">
+          <div class="delta-title">ESTA SEMANA</div>
+          <div class="delta-date">Sem. 15 · Abr</div>
+        </div>
+        <div class="delta-section">
+          <div class="delta-headline">
+            Bar La Paloma respondió <strong class="pos">12 reseñas</strong>.<br>
+            Tú llevas <strong class="neg">3 sin contestar</strong>.
+          </div>
+        </div>
+        <div class="delta-list">
+          <div class="delta-row">La diferencia en rating ha pasado de <strong>0.1</strong> a <strong>0.3</strong> en 4 semanas.</div>
+          <div class="delta-row">Casa Pepe publicó <strong>4 posts</strong>. Tu Instagram sigue sin actividad.</div>
+        </div>
+        <div class="delta-insight">
+          <div class="delta-insight-label">INSIGHT</div>
+          <div class="delta-insight-text">Responder una reseña de 5★ hoy te costaría 30 segundos con Teo.</div>
+        </div>
+      </div>
+
+      <!-- Action slot (post-delta) -->
+      <div class="action-slot-post-delta">
+        <div class="cta-item primary cta-s2">
+          <div class="cta-title">Planifica el mes de IG</div>
+          <div class="cta-body">Con 4–8 fotos te armo el calendario completo. Lo apruebas y lo publico solo durante el mes.</div>
+          <a href="#" class="cta-btn">Mándame fotos por WhatsApp →</a>
+        </div>
+
+        <div class="cta-item primary cta-s3">
+          <div class="cta-title">Prueba tu chatbot</div>
+          <div class="cta-body">Te mando un mensaje como si fuera un cliente. Pruébalo antes de decidir.</div>
+          <a href="#" class="cta-btn">Probar el chatbot →</a>
+        </div>
+
+        <div class="cta-item cta-s4">
+          <div class="cta-title">Configura las reservas</div>
+          <div class="cta-body">Si tu chatbot puede confirmar reservas, ahorras los mensajes que llegan fuera de horario.</div>
+          <a href="#" class="cta-btn secondary">Activar reservas →</a>
+        </div>
+
+        <!-- PAID · pending — one CTA per task -->
+        <div class="cta-paid-pending">
+          <div class="ascii-label">PENDIENTE ESTA SEMANA</div>
+          <div class="cta-stack">
+            <div class="cta-item">
+              <div class="cta-title">Aprobar 2 respuestas</div>
+              <div class="cta-body">Dos reseñas necesitan tu contexto antes de que Teo las publique.</div>
+              <a href="#" class="cta-btn block">Revisar las 2 →</a>
+            </div>
+            <div class="cta-item">
+              <div class="cta-title">Enviar fotos para Mayo</div>
+              <div class="cta-body">Teo tiene 4 huecos sin asignar en el calendario del mes que viene.</div>
+              <a href="#" class="cta-btn block">Mandar fotos por WhatsApp →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAID · all-clear — compact, single horizontal line -->
+        <div class="cta-item all-clear cta-paid-clear compact">
+          <div class="check">✓</div>
+          <div class="cta-title">+12 reseñas respondidas este mes · todo al día</div>
+        </div>
+
+        <!-- FREE — Activa Teo -->
+        <div class="cta-item primary cta-free">
+          <div class="cta-title">Activa Teo · €49/mes</div>
+          <div class="cta-body">Primer mes gratis. Teo responde tus reseñas, publica en Instagram y cierra la brecha con Bar La Paloma.</div>
+          <a href="#" class="cta-btn block">Activar Teo →</a>
+        </div>
+      </div>
+
+      <!-- ═══════════ ZONE 1 ═══════════ -->
+      <div class="ascii-label first-on-page-when-empty">TU POSICIÓN</div>
+
+      <div class="z1-top">
+        <div class="z1-left">
+          <div class="z1-venue">TABERNA DEL ÁNGEL</div>
+          <div class="z1-meta">Malasaña · Cena · €€</div>
+        </div>
+        <div class="z1-right">
+          <div class="z1-rating">4.2</div>
+          <div class="z1-stars">★★★★☆</div>
+          <div class="z1-reviews">187 reseñas · Google</div>
+        </div>
+      </div>
+
+      <div class="z1-ranking">
+        <div class="z1-ranking-label">Ranking en tu zona</div>
+        <div class="z1-ranking-val">4º de 12 locales</div>
+      </div>
+
+      <div class="z1-callouts">
+        <div class="z1-callout up">
+          <span class="z1-callout-arrow">↑</span>
+          <div><span class="z1-callout-label">Mejor en</span> <span class="z1-callout-val up">volumen de reseñas (+42%)</span></div>
+        </div>
+        <div class="z1-callout down">
+          <span class="z1-callout-arrow">↓</span>
+          <div><span class="z1-callout-label">Por debajo en</span> <span class="z1-callout-val down">rating (−0.2) vs Bar La Paloma</span></div>
+        </div>
+      </div>
+
+      <!-- ═══════════ ZONE 2 — Competidores ═══════════ -->
+      <div class="ascii-label">COMPETIDORES</div>
+
+      <!-- BUCKET 1 — COMPETENCIA DIRECTA — always shown -->
+      <div class="bucket">
+        <div class="bucket-head">
+          <div class="bucket-title">COMPETENCIA DIRECTA</div>
+          <div class="bucket-sub">Mismo tipo de local, misma franja horaria</div>
+        </div>
+
+        <div class="comp-row widening" onclick="this.classList.toggle('open')">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-rank">#1</span>
+              <span class="comp-name">Bar La Paloma</span>
+              <span class="comp-chips">
+                <span class="comp-chip dist">320m</span>
+                <span class="comp-chip price">€€</span>
+                <span class="social-icons" aria-label="Instagram y Facebook">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                </span>
+              </span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating higher">4.5</span>
+              <span class="comp-trend up">↑ +0.1</span>
+              <button class="comp-expand-btn">▾</button>
+            </div>
+          </div>
+
+          <div class="comp-detail">
+            <div class="detail-block">
+              <div class="detail-title">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4.5L6 22l1.5-8.5L2 9h7z"/></svg>
+                GOOGLE · 254 reseñas
+              </div>
+              <div class="google-detail">
+                <div class="g-summary">
+                  <strong>Destacan:</strong> servicio rápido, tortilla, terraza. <strong>Quejas:</strong> ruido los fines de semana.
+                </div>
+                <div class="g-dist">
+                  <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:68%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:22%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:6%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:2%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:2%"></div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="detail-block">
+              <div class="detail-title">REDES</div>
+              <div class="social-detail">
+                <div class="social-detail-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/></svg>
+                  IG · <strong>4.2k</strong> seguidores · <strong>312</strong> posts
+                </div>
+                <div class="social-detail-item">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                  FB · <strong>1.1k</strong> · <strong>189</strong> posts
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-row" onclick="this.classList.toggle('open')">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-rank">#2</span>
+              <span class="comp-name">Casa Pepe</span>
+              <span class="comp-chips">
+                <span class="comp-chip dist">150m</span>
+                <span class="comp-chip price">€€</span>
+                <span class="social-icons">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                </span>
+              </span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating higher">4.4</span>
+              <span class="comp-trend flat">→ 0</span>
+              <button class="comp-expand-btn">▾</button>
+            </div>
+          </div>
+
+          <div class="comp-detail">
+            <div class="detail-block">
+              <div class="detail-title">GOOGLE · 198 reseñas</div>
+              <div class="google-detail">
+                <div class="g-summary">
+                  <strong>Destacan:</strong> trato familiar, croquetas, precio. <strong>Quejas:</strong> espera sin reserva.
+                </div>
+                <div class="g-dist">
+                  <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:58%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:28%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:9%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:3%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:2%"></div></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-title">REDES</div>
+              <div class="social-detail">
+                <div class="social-detail-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/></svg>
+                  IG · <strong>890</strong> · <strong>67</strong> posts
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-row" onclick="this.classList.toggle('open')">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-rank">#3</span>
+              <span class="comp-name">El Sureño</span>
+              <span class="comp-chips">
+                <span class="comp-chip dist">410m</span>
+                <span class="comp-chip price">€€</span>
+              </span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating higher">4.3</span>
+              <span class="comp-trend up">↑ +0.2</span>
+              <button class="comp-expand-btn">▾</button>
+            </div>
+          </div>
+          <div class="comp-detail">
+            <div class="detail-block">
+              <div class="detail-title">GOOGLE · 142 reseñas</div>
+              <div class="google-detail">
+                <div class="g-summary">
+                  <strong>Destacan:</strong> cocina creativa, maridaje. <strong>Quejas:</strong> raciones pequeñas.
+                </div>
+                <div class="g-dist">
+                  <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:65%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:24%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:6%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:3%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:2%"></div></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-title">REDES</div>
+              <div class="social-detail">
+                <div class="social-detail-item" style="color: var(--mid); font-style: italic;">Sin perfiles sociales</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-row" onclick="this.classList.toggle('open')">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-rank">#4</span>
+              <span class="comp-name">Matilda</span>
+              <span class="comp-chips">
+                <span class="comp-chip dist">520m</span>
+                <span class="comp-chip price">€€</span>
+                <span class="social-icons">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                </span>
+              </span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating higher">4.3</span>
+              <span class="comp-trend up">↑ +0.1</span>
+              <button class="comp-expand-btn">▾</button>
+            </div>
+          </div>
+          <div class="comp-detail">
+            <div class="detail-block">
+              <div class="detail-title">GOOGLE · 218 reseñas</div>
+              <div class="google-detail">
+                <div class="g-summary"><strong>Destacan:</strong> brunch, decoración.</div>
+                <div class="g-dist">
+                  <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:60%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:25%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:9%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:4%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:2%"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Venue's own row — slots at position 5 by rating -->
+        <div class="comp-row is-self">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-rank">#5</span>
+              <span class="comp-name">Taberna del Ángel<span class="comp-self-tag">tú</span></span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating">4.2</span>
+              <span class="comp-trend flat">→ 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUCKET 2 — OTROS COMPETIDORES — collapsible, closed by default -->
+      <div class="collapsible bucket-collapsible" data-expanded="false">
+        <div class="collapsible-trigger">
+          <div class="bucket-head">
+            <div class="bucket-title">OTROS COMPETIDORES</div>
+            <div class="bucket-sub">Distinto formato, misma franja horaria · 3 locales</div>
+          </div>
+          <div class="collapsible-preview">
+            La Musa · Ojalá · Lamiak <span class="preview-arrow">abrir ↓</span>
+          </div>
+        </div>
+        <div class="collapsible-body">
+
+        <div class="comp-row" onclick="this.classList.toggle('open')">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-name">La Musa</span>
+              <span class="comp-chips">
+                <span class="comp-chip dist">280m</span>
+                <span class="comp-chip price">€€</span>
+                <span class="social-icons">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                </span>
+              </span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating higher">4.4</span>
+              <span class="comp-trend flat">→ 0</span>
+              <button class="comp-expand-btn">▾</button>
+            </div>
+          </div>
+          <div class="comp-detail">
+            <div class="detail-block">
+              <div class="detail-title">GOOGLE · 412 reseñas</div>
+              <div class="google-detail">
+                <div class="g-summary"><strong>Destacan:</strong> coctelería, ambiente. <strong>Quejas:</strong> ruido.</div>
+                <div class="g-dist">
+                  <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:62%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:26%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:7%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:3%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:2%"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-row" onclick="this.classList.toggle('open')">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-name">Ojalá Awareness</span>
+              <span class="comp-chips">
+                <span class="comp-chip dist">390m</span>
+                <span class="comp-chip price">€€</span>
+                <span class="social-icons">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                </span>
+              </span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating higher">4.3</span>
+              <span class="comp-trend up">↑ +0.1</span>
+              <button class="comp-expand-btn">▾</button>
+            </div>
+          </div>
+          <div class="comp-detail">
+            <div class="detail-block">
+              <div class="detail-title">GOOGLE · 620 reseñas</div>
+              <div class="google-detail">
+                <div class="g-summary"><strong>Destacan:</strong> brunch, fotogenia. <strong>Quejas:</strong> cola para mesa.</div>
+                <div class="g-dist">
+                  <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:58%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:28%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:8%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:3%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:3%"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-row" onclick="this.classList.toggle('open')">
+          <div class="comp-main">
+            <div class="comp-left">
+              <span class="comp-name">Lamiak</span>
+              <span class="comp-chips">
+                <span class="comp-chip dist">520m</span>
+                <span class="comp-chip price">€€</span>
+              </span>
+            </div>
+            <div class="comp-right">
+              <span class="comp-rating lower">4.1</span>
+              <span class="comp-trend flat">→ 0</span>
+              <button class="comp-expand-btn">▾</button>
+            </div>
+          </div>
+          <div class="comp-detail">
+            <div class="detail-block">
+              <div class="detail-title">GOOGLE · 305 reseñas</div>
+              <div class="google-detail">
+                <div class="g-summary"><strong>Destacan:</strong> pinchos, barra animada.</div>
+                <div class="g-dist">
+                  <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:52%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:30%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:10%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:5%"></div></div></div>
+                  <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:3%"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div><!-- /collapsible-body OTROS -->
+      </div><!-- /collapsible OTROS -->
+
+      <!-- Action slot (post-Zone 2) — S0/S1 only · CTA fires after owner has seen ranking -->
+      <div class="action-slot-post-zone2" style="margin-top: 14px;">
+        <div class="cta-item primary cta-s0">
+          <div class="cta-title">Activa la gestión de reseñas</div>
+          <div class="cta-body">Tienes <strong>8 reseñas sin responder</strong>. Conecta tu Google y las contesto por ti esta misma semana.</div>
+          <a href="#" class="cta-btn">Continúa en WhatsApp →</a>
+        </div>
+        <div class="cta-item primary cta-s1">
+          <div class="cta-title">Prepara tu primer post</div>
+          <div class="cta-body">Bar La Paloma publicó <strong>4 veces</strong> esta semana. Te preparo el primer post con lo que ya tengo de tu ficha.</div>
+          <a href="#" class="cta-btn">Ver el post propuesto →</a>
+        </div>
+      </div>
+
+      <!-- Foreign patron -->
+      <div class="collapsible fp-collapsible" data-expanded="false">
+        <div class="collapsible-trigger">
+          <div class="ascii-label">VISIBILIDAD INTERNACIONAL</div>
+          <div class="collapsible-preview">28% de reseñas en otros idiomas · media zona 34% <span class="preview-arrow">abrir ↓</span></div>
+        </div>
+        <div class="collapsible-body">
+          <div class="fp-widget">
+            <div class="fp-main">
+              <div class="fp-ratio">28%</div>
+              <div class="fp-vs">de tus reseñas en idiomas extranjeros<br>media zona: <strong>34%</strong></div>
+            </div>
+            <div class="fp-langs">TOP: inglés · francés · alemán</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary actions (paid only) -->
+      <div class="collapsible secondary-actions" data-expanded="false">
+        <div class="collapsible-trigger">
+          <div class="ascii-label">PENDIENTE DE ACTIVAR</div>
+          <div class="collapsible-preview">1 función disponible · Menú del día broadcast <span class="preview-arrow">abrir ↓</span></div>
+        </div>
+        <div class="collapsible-body">
+        <div class="cta-item">
+          <div class="cta-title">Menú del día broadcast</div>
+          <div class="cta-body">Cada mañana mando el menú a tus clientes habituales que han dejado número.</div>
+          <a href="#" class="cta-btn secondary">Activar broadcast →</a>
+        </div>
+        </div>
+      </div>
+
+      <div class="ascii-sep" style="margin-top: 20px;">═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═</div>
+      <div style="text-align:center; color: var(--light); font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; margin-top: 4px;">teo.chat · fin de comanda</div>
+
+      </div><!-- /page-resumen -->
+
+      <!-- ═══════════ PAGE: RESEÑAS ═══════════ -->
+      <div class="page page-reviews">
+
+        <!-- Google review summary header — same for all states -->
+        <div class="collapsible" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="ascii-label">GOOGLE</div>
+            <div class="collapsible-preview">4.2★ · 187 reseñas · 18 nuevas este mes <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+            <div class="g-summary-block">
+          <div class="g-summary-top">
+            <div class="g-summary-dist">
+              <div class="g-dist-row"><span class="g-dist-stars">5</span><div class="g-dist-bar"><div class="fill" style="width:56%"></div></div></div>
+              <div class="g-dist-row"><span class="g-dist-stars">4</span><div class="g-dist-bar"><div class="fill" style="width:24%"></div></div></div>
+              <div class="g-dist-row"><span class="g-dist-stars">3</span><div class="g-dist-bar"><div class="fill" style="width:10%"></div></div></div>
+              <div class="g-dist-row"><span class="g-dist-stars">2</span><div class="g-dist-bar"><div class="fill" style="width:6%"></div></div></div>
+              <div class="g-dist-row"><span class="g-dist-stars">1</span><div class="g-dist-bar"><div class="fill" style="width:4%"></div></div></div>
+            </div>
+            <div class="g-summary-rating-block">
+              <div class="g-big-rating">4.2</div>
+              <div class="g-big-stars">★★★★☆</div>
+              <div class="g-big-count">187 reseñas</div>
+            </div>
+          </div>
+
+          <div class="g-summary-highlights">
+            <div class="g-highlight-row">
+              <div class="g-highlight-label pos">Destacan</div>
+              <div class="g-highlight-text">
+                <strong>La tortilla</strong> (mencionada en 34 reseñas) · <strong>el trato del personal</strong> (28) · <strong>la terraza al sol</strong> (19) · <strong>vermut casero</strong> (12)
+              </div>
+            </div>
+            <div class="g-highlight-row">
+              <div class="g-highlight-label neg">Quejas</div>
+              <div class="g-highlight-text">
+                <strong>Espera sin reserva</strong> (11 reseñas, especialmente fines de semana) · <strong>precio de las bebidas</strong> (7) · <strong>ruido</strong> (5)
+              </div>
+            </div>
+            <div class="g-highlight-row">
+              <div class="g-highlight-label">Patrón</div>
+              <div class="g-highlight-text">
+                Reseñas de 5★ destacan la cocina; las de 3★ y menos mencionan casi siempre el mismo problema de <strong>tiempo de espera</strong>.
+              </div>
+            </div>
+          </div>
+        </div><!-- /g-summary-block -->
+          </div><!-- /collapsible-body GOOGLE -->
+        </div><!-- /collapsible GOOGLE -->
+
+        <!-- Mode chip (S2+) -->
+        <div class="mode-chip">
+          <div class="mode-chip-head">
+            <span class="mode-chip-label">Modo</span>
+            <span class="mode-chip-value">Mixto</span>
+            <span class="mode-chip-edit">Cambiar →</span>
+          </div>
+          <div class="mode-chip-tagline">Teo publica las fáciles, te consulta las que necesitan tu contexto.</div>
+        </div>
+
+        <!-- ══════ S0 SHOWCASE ══════ -->
+        <div class="rev-showcase">
+          <div class="ascii-label">ASÍ RESPONDERÍA TEO</div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">María G.</div>
+                <div class="review-meta">Hace 3 días · Google</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+            <div class="review-text">
+              Volvimos después de dos años y seguís igual de bien. La tortilla sigue siendo de las mejores de Madrid, y el camarero nos recordaba de la última vez. Cuatro estrellas y media redondeo a cinco por eso.
+            </div>
+            <div class="teo-draft">
+              <div class="teo-draft-label">▸ Teo respondería</div>
+              <div class="teo-draft-text">
+                "María, muchísimas gracias por volver — nos hace especial ilusión cuando repetís. Un saludo de parte de todo el equipo, y la tortilla os espera siempre."
+              </div>
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Roberto L.</div>
+                <div class="review-meta">Hace 5 días · Google</div>
+              </div>
+              <div class="review-stars low">★★☆☆☆</div>
+            </div>
+            <div class="review-text">
+              Llegamos a las 14:30 sin reserva y nos dijeron 40 minutos de espera. Esperamos 55. Cuando por fin nos sentamos, la comida bien pero el servicio bastante frío. No sé si volveremos.
+            </div>
+            <div class="teo-draft">
+              <div class="teo-draft-label">▸ Teo respondería</div>
+              <div class="teo-draft-text">
+                "Roberto, lamentamos mucho que la espera se alargara más de lo previsto y que notaras el servicio menos atento — los sábados al mediodía tenemos más demanda de la que podemos atender sin reserva. Nos encantaría darte otra oportunidad; si nos escribes por WhatsApp te guardamos mesa."
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-item primary" style="margin-top: 16px;">
+            <div class="cta-title">Si quieres editar estas respuestas o publicarlas</div>
+            <div class="cta-body">Sigamos la configuración en WhatsApp — así me das acceso a Google y las publico por ti.</div>
+            <a href="#" class="cta-btn">Continúa en WhatsApp →</a>
+          </div>
+        </div>
+
+        <!-- ══════ FOMO TOP-3 URGENT (free tier) ══════ -->
+        <div class="rev-fomo-top">
+          <div class="urgent-banner">
+            <div class="urgent-banner-label">URGENTES</div>
+            <div class="urgent-banner-text">
+              <strong>3 reseñas</strong> están haciendo daño ahora mismo. Cada día sin respuesta las hace más visibles.
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Roberto L.</div>
+                <div class="review-meta">Hace 5 días · Google · Sin responder</div>
+              </div>
+              <div class="review-stars low">★★☆☆☆</div>
+            </div>
+            <div class="review-text">
+              Llegamos a las 14:30 sin reserva y nos dijeron 40 minutos de espera. Esperamos 55. Cuando por fin nos sentamos, la comida bien pero el servicio bastante frío. No sé si volveremos.
+            </div>
+            <div class="fomo-row-cta">
+              <div class="fomo-row-cta-text">Esta reseña aparece al principio de tu perfil</div>
+              <a href="#" class="fomo-row-cta-btn">Activa Teo →</a>
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Carmen P.</div>
+                <div class="review-meta">Hace 12 días · Google · Sin responder</div>
+              </div>
+              <div class="review-stars low">★☆☆☆☆</div>
+            </div>
+            <div class="review-text">
+              Precio desorbitado para lo que ofrecen. 18€ por un plato de jamón que te ponen en cualquier sitio por 12. No volveré.
+            </div>
+            <div class="fomo-row-cta">
+              <div class="fomo-row-cta-text">Sin respuesta desde hace 12 días</div>
+              <a href="#" class="fomo-row-cta-btn">Activa Teo →</a>
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Javier S.</div>
+                <div class="review-meta">Hace 3 semanas · Google · Sin responder</div>
+              </div>
+              <div class="review-stars low">★★★☆☆</div>
+            </div>
+            <div class="review-text">
+              La comida está bien pero el servicio muy lento, y encima no nos respondieron cuando pedí un cambio en el plato. Bar La Paloma de al lado hace lo mismo mejor.
+            </div>
+            <div class="fomo-row-cta">
+              <div class="fomo-row-cta-text">Menciona a un competidor directo</div>
+              <a href="#" class="fomo-row-cta-btn">Activa Teo →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════ PAID ALL-CLEAR BADGE ══════ -->
+        <div class="reviews-all-clear">
+          <div class="check">✓</div>
+          <div>
+            <div class="reviews-all-clear-text">Todo al día</div>
+            <div class="reviews-all-clear-sub">No hay reseñas pendientes.</div>
+          </div>
+        </div>
+
+        <!-- ══════ QUEUED BY TEO (paid all-clear) ══════ -->
+        <div class="rev-queued">
+          <div class="ascii-label">TEO VA A RESPONDER</div>
+
+          <div class="review-row queued">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Lucía R.</div>
+                <div class="review-meta">Hace 4 horas · Google</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+            <div class="review-text truncated">
+              Comimos ayer en plan grupo por un cumpleaños y nos trataron fenomenal. La tortilla como siempre, y el vermut espectacular. Recomendado 100%.
+            </div>
+            <div class="teo-draft">
+              <div class="teo-draft-label">▸ Borrador listo</div>
+              <div class="teo-draft-text">
+                "Lucía, nos alegra mucho que lo disfrutarais — felicidades al cumpleañero/a de nuestra parte. ¡Volved pronto!"
+              </div>
+            </div>
+            <div class="queue-note">· Se publica en 2 horas</div>
+          </div>
+
+          <div class="review-row queued">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Pedro V.</div>
+                <div class="review-meta">Hace 8 horas · Google</div>
+              </div>
+              <div class="review-stars">★★★★☆</div>
+            </div>
+            <div class="review-text truncated">
+              Muy buena calidad en general, la terraza es lo mejor. Cuatro estrellas por el tiempo de espera en la barra pero todo lo demás de diez.
+            </div>
+            <div class="teo-draft">
+              <div class="teo-draft-label">▸ Borrador listo</div>
+              <div class="teo-draft-text">
+                "Gracias Pedro — tomamos nota del tiempo de espera en barra, es algo en lo que estamos trabajando. Os esperamos."
+              </div>
+            </div>
+            <div class="queue-note">· Se publica en 5 horas</div>
+          </div>
+        </div>
+
+        <!-- ══════ UNANSWERED — S1+, PAID, and FREE (below urgent) ══════ -->
+        <div class="rev-unanswered">
+          <div class="ascii-label">SIN RESPONDER</div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Roberto L.</div>
+                <div class="review-meta">Hace 5 días · Google</div>
+              </div>
+              <div class="review-stars low">★★☆☆☆</div>
+            </div>
+            <div class="review-text">
+              Llegamos a las 14:30 sin reserva y nos dijeron 40 minutos de espera. Esperamos 55. Cuando por fin nos sentamos, la comida bien pero el servicio bastante frío.
+            </div>
+            <div class="teo-draft">
+              <div class="teo-draft-label">▸ Teo respondería</div>
+              <div class="teo-draft-text">
+                "Roberto, lamentamos mucho que la espera se alargara más de lo previsto… Nos encantaría darte otra oportunidad; si nos escribes por WhatsApp te guardamos mesa."
+              </div>
+            </div>
+            <div class="review-actions">
+              <a href="#" class="cta-btn">Revisar →</a>
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Elena C.</div>
+                <div class="review-meta">Hace 1 semana · Google</div>
+              </div>
+              <div class="review-stars">★★★★☆</div>
+            </div>
+            <div class="review-text">
+              Volveré seguro. La comida muy rica y el personal atento. Solo un detalle: la música estaba un poco alta para el tipo de sitio.
+            </div>
+            <div class="teo-draft">
+              <div class="teo-draft-label">▸ Teo necesita tu contexto</div>
+              <div class="teo-draft-text">
+                La clienta menciona la música — ¿es algo que queréis ajustar o forma parte del ambiente del local?
+              </div>
+            </div>
+            <div class="review-actions">
+              <a href="#" class="cta-btn">Revisar →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════ ANSWERED — S1+, PAID, PAID-CLEAR, FREE ══════ -->
+        <div class="collapsible" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="ascii-label">RESPONDIDAS</div>
+            <div class="collapsible-preview">169 contestadas · última hace 3 días <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+        <div class="filter-row">
+          <div class="ascii-label">RESPONDIDAS</div>
+
+          <div class="filter-bar">
+            <button class="filter-chip active">Todas</button>
+            <button class="filter-chip">Google</button>
+            <button class="filter-chip">Por mí</button>
+            <button class="filter-chip">Por Teo</button>
+            <button class="filter-chip">Este mes</button>
+          </div>
+
+          <div class="filter-bar">
+            <button class="filter-chip active">Todas</button>
+            <button class="filter-chip">5<span class="star">★</span></button>
+            <button class="filter-chip">4<span class="star">★</span></button>
+            <button class="filter-chip">3<span class="star">★</span></button>
+            <button class="filter-chip">2<span class="star">★</span></button>
+            <button class="filter-chip">1<span class="star">★</span></button>
+          </div>
+        </div>
+
+        <div class="rev-answered">
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">María G.</div>
+                <div class="review-meta">Hace 3 días · Google</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+            <div class="review-text truncated">
+              Volvimos después de dos años y seguís igual de bien. La tortilla sigue siendo de las mejores de Madrid, y el camarero nos recordaba de la última vez.
+            </div>
+            <div class="teo-response">
+              <div class="teo-response-label">▸ Teo respondió</div>
+              María, muchísimas gracias por volver — nos hace especial ilusión cuando repetís. Un saludo de parte de todo el equipo.
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Ana M.</div>
+                <div class="review-meta">Hace 1 semana · Google</div>
+              </div>
+              <div class="review-stars">★★★★☆</div>
+            </div>
+            <div class="review-text truncated">
+              Muy bien la comida y el ambiente. La única pega el ruido cuando se llena el local, cuesta conversar.
+            </div>
+            <div class="teo-response">
+              <div class="teo-response-label">▸ Teo respondió</div>
+              Gracias Ana — tomamos nota del ruido en hora punta, es algo que estamos viendo cómo mejorar.
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Santiago D.</div>
+                <div class="review-meta">Hace 2 semanas · Google</div>
+              </div>
+              <div class="review-stars">★★★☆☆</div>
+            </div>
+            <div class="review-text truncated">
+              La comida correcta, pero el precio se me hizo alto para lo que es. La terraza sí compensa.
+            </div>
+            <div class="teo-response">
+              <div class="teo-response-label owner">▸ Respondiste tú</div>
+              Gracias por tu comentario Santiago. Mantenemos precios acordes a la materia prima que seleccionamos — esperamos que la terraza te traiga de vuelta.
+            </div>
+          </div>
+
+          <div class="review-row">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">Lucía R.</div>
+                <div class="review-meta">Hace 3 semanas · Google</div>
+              </div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+            <div class="review-text truncated">
+              Buenísimo todo. Ambiente familiar y comida de barrio de la de antes. Repetiremos.
+            </div>
+            <div class="teo-response">
+              <div class="teo-response-label">▸ Teo respondió</div>
+              Lucía, esto es exactamente lo que intentamos mantener — el barrio de verdad. Os esperamos.
+            </div>
+          </div>
+        </div>
+          </div><!-- /collapsible-body RESPONDIDAS -->
+        </div><!-- /collapsible RESPONDIDAS -->
+
+        <div class="ascii-sep" style="margin-top: 20px;">═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═</div>
+        <div style="text-align:center; color: var(--light); font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; margin-top: 4px;">teo.chat · fin de comanda</div>
+
+      </div><!-- /page-reviews -->
+
+      <!-- ═══════════ PAGE: CALENDARIO ═══════════ -->
+      <div class="page page-calendar">
+
+        <!-- Competitor pulse strip — same on all states -->
+        <div class="comp-pulse">
+          <div class="comp-pulse-label">Esta semana</div>
+          <div class="comp-pulse-list">
+            <strong>Bar La Paloma</strong> 4 posts · <strong>Casa Pepe</strong> 2 · <strong>Matilda</strong> 3 · <strong>La Musa</strong> 5
+          </div>
+        </div>
+
+        <!-- ══════ S0 — tab not even unlocked, but peek state ══════ -->
+        <div class="cal-s0">
+          <div class="cal-empty-hero">
+            <div class="cal-empty-label">Calendario</div>
+            <div class="cal-empty-sub">Cuando actives la gestión de reseñas y conectemos tu Google, te preparo aquí el primer post. Te avisaré por WhatsApp.</div>
+          </div>
+
+          <div class="cta-item primary">
+            <div class="cta-title">Empieza por las reseñas</div>
+            <div class="cta-body">El calendario se desbloquea después — primero dejamos limpias las respuestas de Google.</div>
+            <a href="#" class="cta-btn">Continúa en WhatsApp →</a>
+          </div>
+        </div>
+
+        <!-- ══════ S1 — single post preview ══════ -->
+        <div class="cal-s1">
+          <div class="ascii-label">TU PRIMER POST</div>
+
+          <div class="post-preview">
+            <div class="post-preview-img">
+              <div class="post-preview-img-label">TORTILLA · FOTO DE TU GOOGLE</div>
+            </div>
+            <div class="post-preview-body">
+              <div class="post-preview-platforms">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                <span class="post-preview-date">Jueves · 14:00</span>
+              </div>
+              <div class="post-preview-caption">
+                La tortilla que todos nos piden — hecha con huevos de corral y cebolla pochada despacio desde las 9 de la mañana. Esta semana en carta. #malasaña #tortillademadrid
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-item primary">
+            <div class="cta-title">¿Quieres cambiar algo?</div>
+            <div class="cta-body">¿Tienes alguna foto mejor para publicar? Teo te ayuda — seguimos en WhatsApp.</div>
+            <a href="#" class="cta-btn">Continúa en WhatsApp →</a>
+          </div>
+        </div>
+
+        <!-- ══════ S2 — month preview with 2 posts/week proposal ══════ -->
+        <div class="cal-s2">
+          <div class="ascii-label">TE PROPONGO ESTE CALENDARIO</div>
+
+          <!-- Expand panel for S2 -->
+          <div class="post-expand" id="expand-s2" style="display: none;">
+            <div class="post-expand-head">
+              <div class="post-expand-status suggested" id="expand-s2-status">PROPUESTA TEO</div>
+              <button class="post-expand-close" onclick="closeExpand('s2')">✕</button>
+            </div>
+            <div class="post-expand-img" id="expand-s2-img">
+              <div class="post-expand-img-label" id="expand-s2-label">TORTILLA · FOTO GENERADA</div>
+            </div>
+            <div class="post-expand-body">
+              <div class="post-expand-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                <span class="post-expand-date" id="expand-s2-date">Jueves 3 · 14:00</span>
+              </div>
+              <div class="post-expand-caption" contenteditable="true" id="expand-s2-caption">La tortilla que todos nos piden — hecha con huevos de corral y cebolla pochada despacio desde las 9 de la mañana. Esta semana en carta.</div>
+              <div class="post-expand-actions">
+                <a href="#" class="cta-btn" onclick="event.preventDefault(); closeExpand('s2');">Aprobar →</a>
+                <a href="#" class="cta-btn secondary">Cambiar foto</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="cal-month">
+            <div class="cal-month-head">
+              <div class="cal-month-title">ABRIL</div>
+            </div>
+            <div class="cal-weekdays">
+              <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-day outside"><div class="cal-day-num">31</div></div>
+              <div class="cal-day"><div class="cal-day-num">1</div></div>
+              <div class="cal-day"><div class="cal-day-num">2</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Jueves 3 · 14:00', label:'TORTILLA · FOTO GENERADA', caption:'La tortilla que todos nos piden — hecha con huevos de corral y cebolla pochada despacio desde las 9 de la mañana.', alt:false, suggested:true})"><div class="cal-day-num">3</div><div class="cal-post suggested">Tortilla</div></div>
+              <div class="cal-day"><div class="cal-day-num">4</div></div>
+              <div class="cal-day"><div class="cal-day-num">5</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Domingo 6 · 13:00', label:'VERMUT · FOTO GENERADA', caption:'Vermut casero de la casa, como se hacía antes. Mediodía de domingo en Malasaña.', alt:true, suggested:true})"><div class="cal-day-num">6</div><div class="cal-post suggested">Vermut</div></div>
+              <div class="cal-day"><div class="cal-day-num">7</div></div>
+              <div class="cal-day"><div class="cal-day-num">8</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Miércoles 9 · 14:00', label:'CARTA · FOTO GENERADA', caption:'Esta semana cambiamos la carta — nuevos entrantes y un par de platos fuera de menú.', alt:false, suggested:true})"><div class="cal-day-num">9</div><div class="cal-post suggested">Carta nueva</div></div>
+              <div class="cal-day"><div class="cal-day-num">10</div></div>
+              <div class="cal-day"><div class="cal-day-num">11</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Sábado 12 · 13:30', label:'TERRAZA · FOTO GENERADA', caption:'La terraza está lista. Sombras, buena mesa y vermut bien frío.', alt:true, suggested:true})"><div class="cal-day-num">12</div><div class="cal-post suggested">Terraza</div></div>
+              <div class="cal-day"><div class="cal-day-num">13</div></div>
+              <div class="cal-day"><div class="cal-day-num">14</div></div>
+              <div class="cal-day"><div class="cal-day-num">15</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Miércoles 16 · 14:00', label:'RACIÓN · FOTO GENERADA', caption:'La ración del día: jamón ibérico, tomate aliñado y pan recién hecho.', alt:false, suggested:true})"><div class="cal-day-num">16</div><div class="cal-post suggested">Ración día</div></div>
+              <div class="cal-day"><div class="cal-day-num">17</div></div>
+              <div class="cal-day"><div class="cal-day-num">18</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Sábado 19 · 13:30', label:'EQUIPO · FOTO GENERADA', caption:'Las manos que hacen que esto funcione. Gracias al equipo que no para.', alt:true, suggested:true})"><div class="cal-day-num">19</div><div class="cal-post suggested">Equipo</div></div>
+              <div class="cal-day"><div class="cal-day-num">20</div></div>
+              <div class="cal-day today"><div class="cal-day-num">21</div></div>
+              <div class="cal-day"><div class="cal-day-num">22</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Miércoles 23 · 14:00', label:'CROQUETAS · FOTO GENERADA', caption:'Las croquetas de la abuela no se entregan, se ganan. Bechamel hecha despacio, jamón ibérico y mucho cariño.', alt:false, suggested:true})"><div class="cal-day-num">23</div><div class="cal-post suggested">Croquetas</div></div>
+              <div class="cal-day"><div class="cal-day-num">24</div></div>
+              <div class="cal-day"><div class="cal-day-num">25</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Sábado 26 · 13:30', label:'VIERNES · FOTO GENERADA', caption:'Fin de semana empieza el viernes. Os esperamos desde las 20:00.', alt:true, suggested:true})"><div class="cal-day-num">26</div><div class="cal-post suggested">Viernes</div></div>
+              <div class="cal-day"><div class="cal-day-num">27</div></div>
+              <div class="cal-day"><div class="cal-day-num">28</div></div>
+              <div class="cal-day"><div class="cal-day-num">29</div></div>
+              <div class="cal-day" onclick="openExpand('s2', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Miércoles 30 · 14:00', label:'CARTA MAYO · FOTO GENERADA', caption:'Empieza mayo y con él la nueva carta de primavera.', alt:false, suggested:true})"><div class="cal-day-num">30</div><div class="cal-post suggested">Carta mayo</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">1</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">2</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">3</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">4</div></div>
+            </div>
+          </div>
+
+          <!-- Batch approve bar -->
+          <div class="cal-batch-bar">
+            <div class="cal-batch-info">
+              <strong>9 propuestas</strong> · Revisa y aprueba todas de una vez
+            </div>
+            <a href="#" class="cta-btn">Aprobar todo</a>
+          </div>
+
+          <div class="cta-item" style="margin-top: 14px;">
+            <div class="cta-title">¿Tienes fotos tuyas?</div>
+            <div class="cta-body">Mándame fotos del local y cambio las generadas por las tuyas. Te ayudo en WhatsApp.</div>
+            <a href="#" class="cta-btn secondary">Continúa en WhatsApp →</a>
+          </div>
+        </div>
+
+        <!-- ══════ S3/S4 — full month, mixed published/scheduled/suggested ══════ -->
+        <div class="cal-s3 cal-s4">
+
+          <!-- Expand panel — populated on tap, hidden when nothing selected -->
+          <div class="post-expand" id="expand-s34" style="display: none;">
+            <div class="post-expand-head">
+              <div class="post-expand-status" id="expand-s34-status">PROPUESTA TEO</div>
+              <button class="post-expand-close" onclick="closeExpand('s34')">✕</button>
+            </div>
+            <div class="post-expand-img" id="expand-s34-img">
+              <div class="post-expand-img-label" id="expand-s34-label">CROQUETAS · FOTO GENERADA</div>
+            </div>
+            <div class="post-expand-body">
+              <div class="post-expand-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                <span class="post-expand-date" id="expand-s34-date">Miércoles 23 · 14:00</span>
+              </div>
+              <div class="post-expand-caption" contenteditable="true" id="expand-s34-caption">Las croquetas de la abuela no se entregan, se ganan. Bechamel hecha despacio, jamón ibérico y mucho cariño. Esta semana en carta. #croquetas #malasaña</div>
+              <div class="post-expand-actions">
+                <a href="#" class="cta-btn" onclick="event.preventDefault(); closeExpand('s34');">Aprobar →</a>
+                <a href="#" class="cta-btn secondary">Cambiar foto</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="cal-month">
+            <div class="cal-month-head">
+              <div class="cal-month-title">ABRIL</div>
+              <div class="cal-month-nav">
+                <button class="cal-nav-btn">‹</button>
+                <button class="cal-nav-btn">›</button>
+              </div>
+            </div>
+            <div class="cal-weekdays">
+              <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-day outside"><div class="cal-day-num">31</div></div>
+              <div class="cal-day"><div class="cal-day-num">1</div></div>
+              <div class="cal-day"><div class="cal-day-num">2</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'PUBLICADO', statusClass:'published', date:'Jueves 3 · Publicado', label:'TORTILLA · FOTO TUYA', caption:'La tortilla que todos nos piden — hecha con huevos de corral y cebolla pochada despacio desde las 9 de la mañana.', alt:false, suggested:false})"><div class="cal-day-num">3</div><div class="cal-post published">Tortilla</div></div>
+              <div class="cal-day"><div class="cal-day-num">4</div></div>
+              <div class="cal-day"><div class="cal-day-num">5</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'PUBLICADO', statusClass:'published', date:'Domingo 6 · Publicado', label:'VERMUT · FOTO TUYA', caption:'Vermut casero de la casa, como se hacía antes. Mediodía de domingo en Malasaña.', alt:true, suggested:false})"><div class="cal-day-num">6</div><div class="cal-post published">Vermut</div></div>
+              <div class="cal-day"><div class="cal-day-num">7</div></div>
+              <div class="cal-day"><div class="cal-day-num">8</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'PUBLICADO', statusClass:'published', date:'Miércoles 9 · Publicado', label:'CARTA · FOTO TUYA', caption:'Esta semana cambiamos la carta — nuevos entrantes y un par de platos fuera de menú.', alt:false, suggested:false})"><div class="cal-day-num">9</div><div class="cal-post published">Carta</div></div>
+              <div class="cal-day"><div class="cal-day-num">10</div></div>
+              <div class="cal-day"><div class="cal-day-num">11</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'PUBLICADO', statusClass:'published', date:'Sábado 12 · Publicado', label:'TERRAZA · FOTO TUYA', caption:'La terraza está lista. Sombras, buena mesa y vermut bien frío.', alt:true, suggested:false})"><div class="cal-day-num">12</div><div class="cal-post published">Terraza</div></div>
+              <div class="cal-day"><div class="cal-day-num">13</div></div>
+              <div class="cal-day"><div class="cal-day-num">14</div></div>
+              <div class="cal-day"><div class="cal-day-num">15</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'PUBLICADO', statusClass:'published', date:'Miércoles 16 · Publicado', label:'RACIÓN · FOTO TUYA', caption:'La ración del día: jamón ibérico, tomate aliñado y pan recién hecho.', alt:false, suggested:false})"><div class="cal-day-num">16</div><div class="cal-post published">Ración</div></div>
+              <div class="cal-day"><div class="cal-day-num">17</div></div>
+              <div class="cal-day"><div class="cal-day-num">18</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'PUBLICADO', statusClass:'published', date:'Sábado 19 · Publicado', label:'EQUIPO · FOTO TUYA', caption:'Las manos que hacen que esto funcione. Gracias al equipo que no para.', alt:true, suggested:false})"><div class="cal-day-num">19</div><div class="cal-post published">Equipo</div></div>
+              <div class="cal-day"><div class="cal-day-num">20</div></div>
+              <div class="cal-day today"><div class="cal-day-num">21</div></div>
+              <div class="cal-day"><div class="cal-day-num">22</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'APROBADO', statusClass:'scheduled', date:'Miércoles 23 · 14:00', label:'CROQUETAS · FOTO TUYA', caption:'Las croquetas de la abuela no se entregan, se ganan. Bechamel hecha despacio, jamón ibérico y mucho cariño. Esta semana en carta. #croquetas #malasaña', alt:false, suggested:false})"><div class="cal-day-num">23</div><div class="cal-post scheduled">Croquetas</div></div>
+              <div class="cal-day"><div class="cal-day-num">24</div></div>
+              <div class="cal-day"><div class="cal-day-num">25</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'APROBADO', statusClass:'scheduled', date:'Sábado 26 · 13:30', label:'VIERNES NOCHE · FOTO TUYA', caption:'Fin de semana empieza el viernes. Os esperamos desde las 20:00.', alt:true, suggested:false})"><div class="cal-day-num">26</div><div class="cal-post scheduled">Viernes</div></div>
+              <div class="cal-day"><div class="cal-day-num">27</div></div>
+              <div class="cal-day"><div class="cal-day-num">28</div></div>
+              <div class="cal-day"><div class="cal-day-num">29</div></div>
+              <div class="cal-day" onclick="openExpand('s34', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Miércoles 30 · 14:00', label:'CARTA MAYO · FOTO GENERADA', caption:'Empieza mayo y con él la nueva carta de primavera: espárragos, guisantes y cordero lechal. Reservas por WhatsApp.', alt:false, suggested:true})"><div class="cal-day-num">30</div><div class="cal-post suggested">Mayo</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">1</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">2</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">3</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">4</div></div>
+            </div>
+          </div>
+
+          <div class="cal-legend">
+            <div class="cal-legend-item"><span class="cal-legend-swatch published"></span>Publicado</div>
+            <div class="cal-legend-item"><span class="cal-legend-swatch scheduled"></span>Aprobado</div>
+            <div class="cal-legend-item"><span class="cal-legend-swatch suggested"></span>Propuesta Teo</div>
+          </div>
+
+          <!-- Batch approve bar -->
+          <div class="cal-batch-bar">
+            <div class="cal-batch-info">
+              <strong>1 propuesta</strong> pendiente de aprobación
+            </div>
+            <a href="#" class="cta-btn">Aprobar todo</a>
+          </div>
+        </div>
+
+        <!-- ══════ PAID — live calendar ══════ -->
+        <div class="cal-paid">
+
+          <!-- Expand panel -->
+          <div class="post-expand" id="expand-paid" style="display: none;">
+            <div class="post-expand-head">
+              <div class="post-expand-status" id="expand-paid-status">APROBADO</div>
+              <button class="post-expand-close" onclick="closeExpand('paid')">✕</button>
+            </div>
+            <div class="post-expand-img" id="expand-paid-img">
+              <div class="post-expand-img-label" id="expand-paid-label">CROQUETAS · FOTO TUYA</div>
+            </div>
+            <div class="post-expand-body">
+              <div class="post-expand-meta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/></svg>
+                <span class="post-expand-date" id="expand-paid-date">Miércoles 23 · 14:00</span>
+              </div>
+              <div class="post-expand-caption" contenteditable="true" id="expand-paid-caption">Las croquetas de la abuela no se entregan, se ganan. Bechamel hecha despacio, jamón ibérico y mucho cariño.</div>
+              <div class="post-expand-actions">
+                <a href="#" class="cta-btn" onclick="event.preventDefault(); closeExpand('paid');">Aprobar →</a>
+                <a href="#" class="cta-btn secondary">Cambiar foto</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="cal-month">
+            <div class="cal-month-head">
+              <div class="cal-month-title">ABRIL</div>
+              <div class="cal-month-nav">
+                <button class="cal-nav-btn">‹</button>
+                <button class="cal-nav-btn">›</button>
+              </div>
+            </div>
+            <div class="cal-weekdays">
+              <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-day outside"><div class="cal-day-num">31</div></div>
+              <div class="cal-day"><div class="cal-day-num">1</div></div>
+              <div class="cal-day"><div class="cal-day-num">2</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'PUBLICADO', statusClass:'published', date:'Jueves 3 · Publicado', label:'TORTILLA · FOTO TUYA', caption:'La tortilla que todos nos piden — hecha con huevos de corral y cebolla pochada despacio.', alt:false, suggested:false})"><div class="cal-day-num">3</div><div class="cal-post published">Tortilla</div></div>
+              <div class="cal-day"><div class="cal-day-num">4</div></div>
+              <div class="cal-day"><div class="cal-day-num">5</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'PUBLICADO', statusClass:'published', date:'Domingo 6 · Publicado', label:'VERMUT · FOTO TUYA', caption:'Vermut casero de la casa, como se hacía antes. Mediodía de domingo en Malasaña.', alt:true, suggested:false})"><div class="cal-day-num">6</div><div class="cal-post published">Vermut</div></div>
+              <div class="cal-day"><div class="cal-day-num">7</div></div>
+              <div class="cal-day"><div class="cal-day-num">8</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'PUBLICADO', statusClass:'published', date:'Miércoles 9 · Publicado', label:'CARTA · FOTO TUYA', caption:'Esta semana cambiamos la carta — nuevos entrantes y un par de platos fuera de menú.', alt:false, suggested:false})"><div class="cal-day-num">9</div><div class="cal-post published">Carta</div></div>
+              <div class="cal-day"><div class="cal-day-num">10</div></div>
+              <div class="cal-day"><div class="cal-day-num">11</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'PUBLICADO', statusClass:'published', date:'Sábado 12 · Publicado', label:'TERRAZA · FOTO TUYA', caption:'La terraza está lista. Sombras, buena mesa y vermut bien frío.', alt:true, suggested:false})"><div class="cal-day-num">12</div><div class="cal-post published">Terraza</div></div>
+              <div class="cal-day"><div class="cal-day-num">13</div></div>
+              <div class="cal-day"><div class="cal-day-num">14</div></div>
+              <div class="cal-day"><div class="cal-day-num">15</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'PUBLICADO', statusClass:'published', date:'Miércoles 16 · Publicado', label:'RACIÓN · FOTO TUYA', caption:'La ración del día: jamón ibérico, tomate aliñado y pan recién hecho.', alt:false, suggested:false})"><div class="cal-day-num">16</div><div class="cal-post published">Ración</div></div>
+              <div class="cal-day"><div class="cal-day-num">17</div></div>
+              <div class="cal-day"><div class="cal-day-num">18</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'PUBLICADO', statusClass:'published', date:'Sábado 19 · Publicado', label:'EQUIPO · FOTO TUYA', caption:'Las manos que hacen que esto funcione. Gracias al equipo que no para.', alt:true, suggested:false})"><div class="cal-day-num">19</div><div class="cal-post published">Equipo</div></div>
+              <div class="cal-day"><div class="cal-day-num">20</div></div>
+              <div class="cal-day today"><div class="cal-day-num">21</div></div>
+              <div class="cal-day"><div class="cal-day-num">22</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'APROBADO', statusClass:'scheduled', date:'Miércoles 23 · 14:00', label:'CROQUETAS · FOTO TUYA', caption:'Las croquetas de la abuela no se entregan, se ganan. Bechamel hecha despacio, jamón ibérico y mucho cariño. Esta semana en carta. #croquetas #malasaña', alt:false, suggested:false})"><div class="cal-day-num">23</div><div class="cal-post scheduled">Croquetas</div></div>
+              <div class="cal-day"><div class="cal-day-num">24</div></div>
+              <div class="cal-day"><div class="cal-day-num">25</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'APROBADO', statusClass:'scheduled', date:'Sábado 26 · 13:30', label:'VIERNES NOCHE · FOTO TUYA', caption:'Fin de semana empieza el viernes. Os esperamos desde las 20:00.', alt:true, suggested:false})"><div class="cal-day-num">26</div><div class="cal-post scheduled">Viernes</div></div>
+              <div class="cal-day"><div class="cal-day-num">27</div></div>
+              <div class="cal-day"><div class="cal-day-num">28</div></div>
+              <div class="cal-day"><div class="cal-day-num">29</div></div>
+              <div class="cal-day" onclick="openExpand('paid', {status:'PROPUESTA TEO', statusClass:'suggested', date:'Miércoles 30 · 14:00', label:'CARTA MAYO · FOTO GENERADA', caption:'Empieza mayo y con él la nueva carta de primavera: espárragos, guisantes y cordero lechal. Reservas por WhatsApp.', alt:false, suggested:true})"><div class="cal-day-num">30</div><div class="cal-post suggested">Mayo</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">1</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">2</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">3</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">4</div></div>
+            </div>
+          </div>
+
+          <div class="cal-legend">
+            <div class="cal-legend-item"><span class="cal-legend-swatch published"></span>Publicado</div>
+            <div class="cal-legend-item"><span class="cal-legend-swatch scheduled"></span>Aprobado</div>
+            <div class="cal-legend-item"><span class="cal-legend-swatch suggested"></span>Propuesta Teo</div>
+          </div>
+
+          <!-- Batch approve bar -->
+          <div class="cal-batch-bar">
+            <div class="cal-batch-info">
+              <strong>1 propuesta</strong> pendiente de aprobación
+            </div>
+            <a href="#" class="cta-btn">Aprobar todo</a>
+          </div>
+        </div>
+
+        <!-- ══════ FREE FOMO — empty own grid ══════ -->
+        <div class="cal-free">
+          <div class="ascii-label red">TU CALENDARIO ESTÁ VACÍO</div>
+
+          <div class="cal-month">
+            <div class="cal-month-head">
+              <div class="cal-month-title">ABRIL</div>
+            </div>
+            <div class="cal-weekdays">
+              <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-day outside"><div class="cal-day-num">31</div></div>
+              <div class="cal-day"><div class="cal-day-num">1</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">2</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">3</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">4</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">5</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">6</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">7</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">8</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">9</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">10</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">11</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">12</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">13</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">14</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">15</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">16</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">17</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">18</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">19</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">20</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day today"><div class="cal-day-num">21</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">22</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">23</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">24</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">25</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">26</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">27</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">28</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">29</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day"><div class="cal-day-num">30</div><div class="cal-post empty-fomo">—</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">1</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">2</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">3</div></div>
+              <div class="cal-day outside"><div class="cal-day-num">4</div></div>
+            </div>
+          </div>
+
+          <div class="cta-item primary" style="margin-top: 14px;">
+            <div class="cta-title">Activa Teo · €49/mes</div>
+            <div class="cta-body">Publico 2 posts por semana en tu Instagram y Facebook. Tú me mandas fotos cuando quieras — yo me encargo del resto.</div>
+            <a href="#" class="cta-btn">Activar Teo →</a>
+          </div>
+        </div>
+
+        <!-- Bulk photo upload — visible for S3/S4/PAID -->
+        <div class="cal-s3 cal-s4 cal-paid">
+          <div class="cal-batch-section">
+            <div class="cta-item">
+              <div class="cta-title">Enviar varias fotos de una vez</div>
+              <div class="cta-body">Mándame 4–8 fotos del local, platos o equipo por WhatsApp y genero los posts del próximo mes por ti. Tú los apruebas aquí.</div>
+              <a href="#" class="cta-btn">Mandar fotos por WhatsApp →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="ascii-sep" style="margin-top: 20px;">═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═</div>
+        <div style="text-align:center; color: var(--light); font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; margin-top: 4px;">teo.chat · fin de comanda</div>
+
+      </div><!-- /page-calendar -->
+
+      <!-- ═══════════ PAGE: CHATBOT ═══════════ -->
+      <div class="page page-chatbot">
+
+        <!-- S0/S1/S2 — not yet deployed -->
+        <div class="cbot-s0">
+          <div class="cal-empty-hero">
+            <div class="cal-empty-label">Chatbot</div>
+            <div class="cal-empty-sub">Cuando lleguemos a la sesión 3, te configuro el chatbot con los datos de tu local y te mando una demo por WhatsApp para que lo pruebes antes de lanzarlo.</div>
+          </div>
+
+          <div class="cta-item">
+            <div class="cta-title">Seguimos en orden</div>
+            <div class="cta-body">Primero reseñas, después Instagram, después chatbot. Cada paso suma a los anteriores.</div>
+            <a href="#" class="cta-btn secondary">Continúa en WhatsApp →</a>
+          </div>
+        </div>
+
+        <!-- S3 — chatbot demo preview -->
+        <div class="cbot-s3">
+          <div class="ascii-label">ASÍ VA A HABLAR TU CHATBOT</div>
+
+          <div class="chat-transcript">
+            <div class="chat-transcript-head">Ejemplo 1 · Horarios</div>
+            <div class="chat-msgs">
+              <div class="chat-msg customer">
+                <div class="chat-msg-meta">Cliente · 21:14</div>
+                Buenas, ¿abrís mañana domingo?
+              </div>
+              <div class="chat-msg bot">
+                <div class="chat-msg-meta">Taberna del Ángel · 21:14</div>
+                Hola! Sí, mañana abrimos de 13:00 a 16:30 y de 20:00 a 23:30. ¿Quieres reservar?
+              </div>
+              <div class="chat-msg customer">
+                <div class="chat-msg-meta">Cliente · 21:15</div>
+                Sí, para 4 personas a las 21:00
+              </div>
+              <div class="chat-msg bot">
+                <div class="chat-msg-meta">Taberna del Ángel · 21:15</div>
+                Perfecto, apuntado para 4 personas mañana a las 21:00. Te mando confirmación por WhatsApp en un momento.
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-transcript">
+            <div class="chat-transcript-head">Ejemplo 2 · Ubicación y menú</div>
+            <div class="chat-msgs">
+              <div class="chat-msg customer">
+                <div class="chat-msg-meta">Cliente · 14:02</div>
+                ¿Dónde estáis? ¿Tenéis menú del día?
+              </div>
+              <div class="chat-msg bot">
+                <div class="chat-msg-meta">Taberna del Ángel · 14:02</div>
+                Estamos en Calle de la Palma 18, Malasaña — a 2 min del metro Tribunal. Hoy tenemos menú del día a 14€: crema de calabaza o ensalada de la casa, lomo de merluza o estofado de ternera, postre casero y bebida. ¿Te guardamos mesa?
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-transcript">
+            <div class="chat-transcript-head">Ejemplo 3 · Pregunta compleja</div>
+            <div class="chat-msgs">
+              <div class="chat-msg customer">
+                <div class="chat-msg-meta">Cliente · 19:30</div>
+                Hola, somos 8 y uno celíaco. ¿Podéis con eso?
+              </div>
+              <div class="chat-msg bot">
+                <div class="chat-msg-meta">Taberna del Ángel · 19:30</div>
+                Claro! Para 8 personas mejor reservamos, tenemos varias opciones sin gluten en carta (tortilla, ibéricos, pescados a la plancha). Te paso al encargado por si quieres detalles concretos: en un momento te responde.
+              </div>
+              <div class="chat-divider">Escalado al dueño</div>
+            </div>
+          </div>
+
+          <!-- Demo link box -->
+          <div class="demo-link-box">
+            <div class="demo-link-head">Prueba el chatbot ahora</div>
+            <div class="demo-link-desc">Abre WhatsApp y habla con tu chatbot de prueba como si fueras un cliente. Está configurado con los datos de tu local — si te pregunta algo raro, dímelo.</div>
+            <a href="#" class="cta-btn">Abrir demo en WhatsApp →</a>
+          </div>
+
+          <div class="cta-item primary">
+            <div class="cta-title">Cuando estés listo</div>
+            <div class="cta-body">Si te gusta cómo responde, lo lanzamos al número público del local. Puedes ajustar cosas antes o después — seguimos en WhatsApp.</div>
+            <a href="#" class="cta-btn">Continúa en WhatsApp →</a>
+          </div>
+        </div>
+
+        <!-- S4+/PAID — live chatbot dashboard -->
+        <div class="cbot-live">
+          <div class="ascii-label">CHATBOT ACTIVO</div>
+
+          <!-- Stats -->
+          <div class="chatbot-stats">
+            <div class="stat-card">
+              <div class="stat-label">Conversaciones</div>
+              <div class="stat-value">47</div>
+              <div class="stat-sub">esta semana · +12 vs. sem. anterior</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Auto-resueltas</div>
+              <div class="stat-value">84%</div>
+              <div class="stat-sub">40 de 47 · 7 escaladas a ti</div>
+            </div>
+          </div>
+
+          <!-- Top customer question types -->
+          <div class="ascii-label">PREGUNTAS FRECUENTES</div>
+          <div class="chatbot-topics">
+            <div class="topic-row">
+              <div class="topic-label">Horarios y días de apertura</div>
+              <div class="topic-count">18</div>
+            </div>
+            <div class="topic-row">
+              <div class="topic-label">Reservas</div>
+              <div class="topic-count">14</div>
+            </div>
+            <div class="topic-row">
+              <div class="topic-label">Menú del día / carta</div>
+              <div class="topic-count">9</div>
+            </div>
+            <div class="topic-row">
+              <div class="topic-label">Ubicación</div>
+              <div class="topic-count">4</div>
+            </div>
+            <div class="topic-row">
+              <div class="topic-label">Otros</div>
+              <div class="topic-count">2</div>
+            </div>
+          </div>
+
+          <!-- WhatsApp Business link -->
+          <div class="wa-biz-link">
+            <div class="wa-biz-link-head">Las conversaciones</div>
+            <div class="wa-biz-link-sub">Las conversaciones reales con tus clientes viven en la app de WhatsApp Business. Desde ahí puedes leer lo que el chatbot les contesta y entrar en cualquier conversación si quieres.</div>
+            <a href="whatsapp-business://" class="cta-btn">Abrir WhatsApp Business →</a>
+            <div class="wa-biz-link-hint">Si no tienes la app instalada, te llevo a descargarla.</div>
+          </div>
+
+          <!-- Config sections -->
+          <div class="collapsible" data-expanded="false">
+            <div class="collapsible-trigger">
+              <div class="ascii-label">CONFIGURACIÓN</div>
+              <div class="collapsible-preview">Reservas · Menú · Reseñas · FAQ activa <span class="preview-arrow">abrir ↓</span></div>
+            </div>
+            <div class="collapsible-body">
+
+          <div class="cfg-section">
+            <div class="cfg-head">
+              <div class="cfg-title">Reservas</div>
+              <div class="cfg-status inactive">Desactivado</div>
+            </div>
+            <div class="cfg-desc">El chatbot puede confirmar reservas directamente según las franjas horarias que me indiques. Ahora deriva las reservas a ti.</div>
+            <div class="cfg-action">
+              <a href="#" class="cta-btn secondary">Activar en WhatsApp →</a>
+            </div>
+          </div>
+
+          <div class="cfg-section">
+            <div class="cfg-head">
+              <div class="cfg-title">Menú del día · broadcast</div>
+              <div class="cfg-status inactive">Desactivado</div>
+            </div>
+            <div class="cfg-desc">Cada mañana te pido el menú del día y lo mando a los clientes habituales que han dejado su número. También lo publico en Google.</div>
+            <div class="cfg-action">
+              <a href="#" class="cta-btn secondary">Activar en WhatsApp →</a>
+            </div>
+          </div>
+
+          <div class="cfg-section">
+            <div class="cfg-head">
+              <div class="cfg-title">Petición de reseña</div>
+              <div class="cfg-status inactive">Desactivado</div>
+            </div>
+            <div class="cfg-desc">48h después de que un cliente interactúe con el chatbot, le mando un recordatorio amable pidiendo una reseña en Google.</div>
+            <div class="cfg-action">
+              <a href="#" class="cta-btn secondary">Activar en WhatsApp →</a>
+            </div>
+          </div>
+
+          <div class="cfg-section">
+            <div class="cfg-head">
+              <div class="cfg-title">FAQ del chatbot</div>
+              <div class="cfg-status active">Activo</div>
+            </div>
+            <div class="cfg-desc">Preguntas y respuestas específicas que el chatbot usa para tu local. Actualmente configurado con los datos de tu ficha de Google.</div>
+            <div class="cfg-action">
+              <a href="#" class="cta-btn secondary">Editar en WhatsApp →</a>
+            </div>
+          </div>
+
+            </div><!-- /collapsible-body CONFIGURACIÓN -->
+          </div><!-- /collapsible CONFIGURACIÓN -->
+        </div>
+
+        <!-- FREE — teaser only -->
+        <div class="cbot-free">
+          <div class="ascii-label red">CHATBOT · SIN ACTIVAR</div>
+
+          <div class="demo-link-box">
+            <div class="demo-link-head">Imagínalo contestando en tu nombre</div>
+            <div class="demo-link-desc">Con Teo activo, tu número de WhatsApp respondería solo a las preguntas de siempre: horarios, ubicación, si queda mesa, si hay menú del día. Tú sólo entras cuando hace falta de verdad.</div>
+          </div>
+
+          <div class="chat-transcript">
+            <div class="chat-transcript-head">Ejemplo</div>
+            <div class="chat-msgs">
+              <div class="chat-msg customer">
+                <div class="chat-msg-meta">Cliente · 21:14</div>
+                Buenas, ¿abrís mañana domingo?
+              </div>
+              <div class="chat-msg bot">
+                <div class="chat-msg-meta">Taberna del Ángel · 21:14</div>
+                Hola! Sí, mañana abrimos de 13:00 a 16:30 y de 20:00 a 23:30. ¿Quieres reservar?
+              </div>
+            </div>
+          </div>
+
+          <div class="cta-item primary">
+            <div class="cta-title">Activa Teo · €49/mes</div>
+            <div class="cta-body">Primer mes gratis. El chatbot se configura con los datos de tu local y empieza a contestar a tus clientes desde el primer día.</div>
+            <a href="#" class="cta-btn">Activar Teo →</a>
+          </div>
+        </div>
+
+        <div class="ascii-sep" style="margin-top: 20px;">═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═</div>
+        <div style="text-align:center; color: var(--light); font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; margin-top: 4px;">teo.chat · fin de comanda</div>
+
+      </div><!-- /page-chatbot -->
+
+      <!-- ═══════════ PAGE: FAQ (Pregúntale a Teo) ═══════════ -->
+      <div class="page page-faq">
+
+        <div class="ascii-label">PREGÚNTALE A TEO</div>
+
+        <div class="faq-intro">
+          ¿Necesitas algo concreto? Estas son las peticiones más comunes — cada una te lleva a <strong>WhatsApp</strong> con el mensaje listo para enviar, así no tienes que explicarlo desde cero.
+        </div>
+
+        <!-- Group 1 — Reseñas -->
+        <div class="faq-group">
+          <div class="faq-group-title">Reseñas</div>
+          <a href="#" class="faq-btn">
+            <span>Quiero cambiar cómo Teo gestiona mis reseñas</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Quiero revisar una respuesta antes de que se publique</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Me ha llegado una reseña injusta, ¿qué hago?</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Quiero que Teo responda siempre con mi firma</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+        </div>
+
+        <!-- Group 2 — Chatbot y cliente -->
+        <div class="faq-group">
+          <div class="faq-group-title">Chatbot y cliente</div>
+          <a href="#" class="faq-btn">
+            <span>Quiero cambiar lo que contesta el chatbot</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>El chatbot se ha equivocado en algo</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Quiero activar reservas automáticas</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Quiero activar el broadcast del menú del día</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+        </div>
+
+        <!-- Group 3 — Redes y contenido -->
+        <div class="faq-group">
+          <div class="faq-group-title">Redes y contenido</div>
+          <a href="#" class="faq-btn">
+            <span>Quiero subir fotos del local</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Cambia el tono de las publicaciones</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Quiero publicar menos o más posts por semana</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Pausa las publicaciones durante unos días</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+        </div>
+
+        <!-- Group 4 — Plan y facturación -->
+        <div class="faq-group">
+          <div class="faq-group-title">Plan y facturación</div>
+          <a href="#" class="faq-btn">
+            <span>Quiero cambiar mis datos de facturación</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>¿Puedo pagar el año entero?</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Quiero recomendar Teo a otro local</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+          <a href="#" class="faq-btn">
+            <span>Pausa mi cuenta durante las vacaciones</span>
+            <span class="faq-btn-arrow">→</span>
+          </a>
+        </div>
+
+        <div class="ascii-sep" style="margin-top: 20px;">═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═</div>
+        <div style="text-align:center; color: var(--light); font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; margin-top: 4px;">teo.chat · fin de comanda</div>
+
+      </div><!-- /page-faq -->
+
+      <!-- ═══════════ PAGE: SETTINGS ═══════════ -->
+      <div class="page page-settings">
+
+        <button class="settings-back" onclick="body.setAttribute('data-page','resumen');">‹ Volver al resumen</button>
+
+        <div class="ascii-label">AJUSTES</div>
+
+        <!-- Cuenta -->
+        <div class="collapsible settings-group" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="settings-group-title">Cuenta</div>
+            <div class="collapsible-preview">Datos del local · Teléfono · Email · Idioma <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+          <div class="setting-row tappable">
+            <div class="setting-left">
+              <div class="setting-label">Datos del local</div>
+              <div class="setting-value">Taberna del Ángel · C/ de la Palma 18, Madrid</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Cambiar →</span></div>
+          </div>
+          <div class="setting-row tappable">
+            <div class="setting-left">
+              <div class="setting-label">Teléfono</div>
+              <div class="setting-value mono">+34 91 522 44 67</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Cambiar →</span></div>
+          </div>
+          <div class="setting-row tappable">
+            <div class="setting-left">
+              <div class="setting-label">Email de respaldo</div>
+              <div class="setting-value mono">miguel@tabernadelangel.com</div>
+              <div class="setting-value">Teo te envía el enlace del portal aquí si WhatsApp falla.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Cambiar →</span></div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-left">
+              <div class="setting-label">Idioma</div>
+              <div class="setting-value">Español</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Cambiar →</span></div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Plan y facturación -->
+        <div class="collapsible settings-group" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="settings-group-title">Plan y facturación</div>
+            <div class="collapsible-preview">Tapa · €49/mes · próximo cargo 15/05 <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+          <div class="setting-row">
+            <div class="setting-left">
+              <div class="setting-label">Plan actual · Tapa</div>
+              <div class="setting-value">€49/mes · próximo cargo 15 de mayo</div>
+            </div>
+            <div class="setting-right"><span class="setting-chip active">Activo</span></div>
+          </div>
+          <div class="setting-row tappable">
+            <div class="setting-left">
+              <div class="setting-label">Método de pago</div>
+              <div class="setting-value mono">Visa ···· 4242</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Actualizar →</span></div>
+          </div>
+          <div class="setting-row tappable">
+            <div class="setting-left">
+              <div class="setting-label">Pago anual</div>
+              <div class="setting-value">2 meses gratis · €490/año en vez de €588.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Activar →</span></div>
+          </div>
+          <div class="setting-row tappable">
+            <div class="setting-left">
+              <div class="setting-label">Cambiar plan</div>
+              <div class="setting-value">Subir a Ración (€99) o bajar a Gratis.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">WhatsApp →</span></div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Historial facturación -->
+        <div class="collapsible settings-group" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="settings-group-title">Historial de facturas</div>
+            <div class="collapsible-preview">4 facturas · última 15 abr €49 <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+          <div class="invoice-row">
+            <div class="invoice-date">15 abr 2026</div>
+            <div class="invoice-amount">€49,00</div>
+            <a href="#" class="invoice-download">PDF ↓</a>
+          </div>
+          <div class="invoice-row">
+            <div class="invoice-date">15 mar 2026</div>
+            <div class="invoice-amount">€49,00</div>
+            <a href="#" class="invoice-download">PDF ↓</a>
+          </div>
+          <div class="invoice-row">
+            <div class="invoice-date">15 feb 2026</div>
+            <div class="invoice-amount">€49,00</div>
+            <a href="#" class="invoice-download">PDF ↓</a>
+          </div>
+          <div class="invoice-row">
+            <div class="invoice-date">15 ene 2026</div>
+            <div class="invoice-amount">€49,00</div>
+            <a href="#" class="invoice-download">PDF ↓</a>
+          </div>
+          </div>
+        </div>
+
+        <!-- Referidos -->
+        <div class="collapsible settings-group" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="settings-group-title">Referidos</div>
+            <div class="collapsible-preview">5 enviados · 2 convertidos · 2 meses gratis ganados <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+
+          <div class="ref-banner">
+            <div class="ref-code">ANGELMIGUEL-4821</div>
+            <div class="ref-url">teo.chat/r/ANGELMIGUEL-4821</div>
+
+            <div class="ref-stats">
+              <div>
+                <div class="ref-stat-label">Enviados</div>
+                <div class="ref-stat-value">5</div>
+              </div>
+              <div>
+                <div class="ref-stat-label">Convertidos</div>
+                <div class="ref-stat-value">2</div>
+              </div>
+              <div>
+                <div class="ref-stat-label">Meses gratis</div>
+                <div class="ref-stat-value">2</div>
+              </div>
+            </div>
+
+            <a href="#" class="cta-btn block">Copiar enlace</a>
+          </div>
+
+          <div class="ref-how">
+            <strong>Cómo funciona:</strong> por cada local que se suscriba usando tu enlace, te regalo un mes gratis de Teo. El local referido recibe su primer mes de pago también gratis, además del mes de prueba habitual.
+          </div>
+          </div>
+        </div>
+
+        <!-- Comunicaciones -->
+        <div class="collapsible settings-group" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="settings-group-title">Comunicaciones</div>
+            <div class="collapsible-preview">Boletín HORECA activo · informe impreso pausado · QR <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+          <div class="setting-row">
+            <div class="setting-left">
+              <div class="setting-label">Boletín semanal HORECA</div>
+              <div class="setting-value">Resumen semanal de noticias del sector por email.</div>
+            </div>
+            <div class="setting-right">
+              <div class="toggle on" onclick="this.classList.toggle('on');"></div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-left">
+              <div class="setting-label">Informe mensual impreso</div>
+              <div class="setting-value">Resumen en papel por Correos el día 1 de cada mes.</div>
+            </div>
+            <div class="setting-right">
+              <div class="toggle" onclick="this.classList.toggle('on');"></div>
+            </div>
+          </div>
+          <div class="setting-row tappable">
+            <div class="setting-left">
+              <div class="setting-label">Pack de QR para el local</div>
+              <div class="setting-value">Pegatinas y tarjetas con el QR del local para pedir reseñas.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Pedir →</span></div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="collapsible danger-section" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="danger-label">ZONA DELICADA</div>
+            <div class="collapsible-preview">Pausar · cancelar · cerrar sesión · borrar cuenta <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+
+          <div class="setting-row tappable danger-row">
+            <div class="setting-left">
+              <div class="setting-label">Pausar cuenta por vacaciones</div>
+              <div class="setting-value">Teo para todo durante los días que indiques. El plan no se cobra mientras esté pausado.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">WhatsApp →</span></div>
+          </div>
+
+          <div class="setting-row tappable danger-row">
+            <div class="setting-left">
+              <div class="setting-label">Cancelar suscripción</div>
+              <div class="setting-value">Bajas a plan gratis al final del mes actual.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">WhatsApp →</span></div>
+          </div>
+
+          <div class="setting-row tappable danger-row">
+            <div class="setting-left">
+              <div class="setting-label">Cerrar sesión en este dispositivo</div>
+              <div class="setting-value">Tendrás que pedir un enlace nuevo por WhatsApp.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">Salir →</span></div>
+          </div>
+
+          <div class="setting-row tappable danger-row">
+            <div class="setting-left">
+              <div class="setting-label">Borrar mi cuenta</div>
+              <div class="setting-value">Elimino todos tus datos. Esto no se puede deshacer.</div>
+            </div>
+            <div class="setting-right"><span class="setting-arrow">WhatsApp →</span></div>
+          </div>
+          </div>
+        </div>
+
+        <div class="ascii-sep" style="margin-top: 20px;">═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═ ═</div>
+        <div style="text-align:center; color: var(--light); font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; margin-top: 4px;">teo.chat · fin de comanda</div>
+
+      </div><!-- /page-settings -->
+
+    </div>
+
+    <!-- ═══════════ BOTTOM NAV ═══════════ -->
+    <nav class="bottom-nav">
+      <button class="nav-btn" data-show="s0 s1 s2 s3 s4 paid free" data-page-link="resumen" aria-label="Resumen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>
+        </svg>
+        <span class="nav-btn-label">Resumen</span>
+      </button>
+
+      <button class="nav-btn next" data-show="s0" data-page-link="reviews" aria-label="Reseñas (próximo)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4.5L6 22l1.5-8.5L2 9h7z"/>
+        </svg>
+        <span class="nav-btn-label">Reseñas</span>
+      </button>
+      <button class="nav-btn" data-show="s1 s2 s3 s4 paid free" data-page-link="reviews" aria-label="Reseñas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4.5L6 22l1.5-8.5L2 9h7z"/>
+        </svg>
+        <span class="nav-btn-label">Reseñas</span>
+      </button>
+
+      <button class="nav-btn next" data-show="s1" data-page-link="calendar" aria-label="Calendario (próximo)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="16" rx="1"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+          <line x1="8" y1="3" x2="8" y2="7"/>
+          <line x1="16" y1="3" x2="16" y2="7"/>
+        </svg>
+        <span class="nav-btn-label">Calendario</span>
+      </button>
+      <button class="nav-btn" data-show="s2 s3 s4 paid free" data-page-link="calendar" aria-label="Calendario">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="16" rx="1"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+          <line x1="8" y1="3" x2="8" y2="7"/>
+          <line x1="16" y1="3" x2="16" y2="7"/>
+        </svg>
+        <span class="nav-btn-label">Calendario</span>
+      </button>
+
+      <button class="nav-btn" data-show="s3 s4 paid free" data-page-link="chatbot" aria-label="Chatbot">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16v12H7l-3 3z"/>
+          <circle cx="9" cy="10" r="1" fill="currentColor"/>
+          <circle cx="12" cy="10" r="1" fill="currentColor"/>
+          <circle cx="15" cy="10" r="1" fill="currentColor"/>
+        </svg>
+        <span class="nav-btn-label">Chatbot</span>
+      </button>
+
+      <button class="nav-btn" data-show="paid" data-page-link="faq" aria-label="Pregúntale a Teo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7v.5"/>
+          <circle cx="12" cy="17" r="0.7" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="nav-btn-label">FAQ</span>
+      </button>
+    </nav>
+
+  </div>
+</div>
+
+<script>
+  const btns = document.querySelectorAll('.state-btn');
+  const body = document.body;
+
+  // Reset all collapsibles back to default for the current state.
+  // A collapsible can opt into "default-expanded for state X" via
+  // data-default-expand-states="s0 s1" (space-separated state names).
+  function resetCollapsibles() {
+    const currentState = body.getAttribute('data-state');
+    document.querySelectorAll('.collapsible').forEach(c => {
+      const defaultExpand = c.getAttribute('data-default-expand-states') || '';
+      const shouldExpand = defaultExpand.split(/\s+/).filter(Boolean).includes(currentState);
+      c.setAttribute('data-expanded', shouldExpand ? 'true' : 'false');
+    });
+  }
+  // Initial load: honor default-expand for the starting state
+  resetCollapsibles();
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      body.setAttribute('data-state', btn.dataset.target);
+      resetCollapsibles();
+      const sb = document.querySelector('.scroll-body');
+      if (sb) sb.scrollTop = 0;
+    });
+  });
+
+  // Bottom nav — switch pages
+  document.querySelectorAll('.nav-btn[data-page-link]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.pageLink;
+      body.setAttribute('data-page', target);
+      resetCollapsibles();
+      const sb = document.querySelector('.scroll-body');
+      if (sb) sb.scrollTop = 0;
+    });
+  });
+
+  // Collapsible toggle — delegated handler
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.collapsible-trigger');
+    if (!trigger) return;
+    // Don't toggle if user clicked an interactive element inside the body of an expanded section
+    if (e.target.closest('.collapsible-body')) return;
+    const collapsible = trigger.closest('.collapsible');
+    if (!collapsible) return;
+    const isOpen = collapsible.getAttribute('data-expanded') === 'true';
+    collapsible.setAttribute('data-expanded', isOpen ? 'false' : 'true');
+  });
+
+  // Calendar — expand/collapse post panel
+  function openExpand(ctx, data) {
+    const panel = document.getElementById('expand-' + ctx);
+    if (!panel) return;
+
+    const statusEl = document.getElementById('expand-' + ctx + '-status');
+    const imgEl = document.getElementById('expand-' + ctx + '-img');
+    const labelEl = document.getElementById('expand-' + ctx + '-label');
+    const dateEl = document.getElementById('expand-' + ctx + '-date');
+    const captionEl = document.getElementById('expand-' + ctx + '-caption');
+
+    if (statusEl) {
+      statusEl.textContent = data.status;
+      statusEl.className = 'post-expand-status ' + (data.statusClass || '');
+    }
+    if (imgEl) {
+      imgEl.className = 'post-expand-img' + (data.alt ? ' alt' : '');
+    }
+    if (labelEl) labelEl.textContent = data.label;
+    if (dateEl) dateEl.textContent = data.date;
+    if (captionEl) {
+      captionEl.textContent = data.caption;
+      captionEl.setAttribute('contenteditable', data.suggested ? 'true' : 'false');
+    }
+
+    // Update action buttons based on state
+    const actions = panel.querySelector('.post-expand-actions');
+    if (actions) {
+      if (data.statusClass === 'published') {
+        actions.style.display = 'none';
+      } else {
+        actions.style.display = 'flex';
+        // Change "Aprobar" label if already approved
+        const primaryBtn = actions.querySelector('.cta-btn:not(.secondary)');
+        if (primaryBtn) {
+          primaryBtn.textContent = data.statusClass === 'scheduled' ? 'Editar texto' : 'Aprobar →';
+        }
+      }
+    }
+
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeExpand(ctx) {
+    const panel = document.getElementById('expand-' + ctx);
+    if (panel) panel.style.display = 'none';
+  }
+
+  // Inject "+ post" create buttons into empty future days in S3/S4 and PAID calendars
+  function injectCreateButtons() {
+    // Only for S3/S4/PAID wrappers (cal-s3, cal-s4, cal-paid classes). S2 is "propose only" — no create.
+    document.querySelectorAll('.cal-s3 .cal-grid, .cal-s4 .cal-grid, .cal-paid .cal-grid').forEach(grid => {
+      const today = 21; // Mockup "today" is April 21
+      grid.querySelectorAll('.cal-day').forEach(day => {
+        if (day.classList.contains('outside')) return;
+        if (day.querySelector('.cal-post')) return; // already has a post
+        if (day.querySelector('.cal-day-create')) return; // already has a create button
+        const numEl = day.querySelector('.cal-day-num');
+        if (!numEl) return;
+        const dayNum = parseInt(numEl.textContent, 10);
+        if (dayNum < today) {
+          day.classList.add('past'); // past days won't get create button
+          return;
+        }
+        // Inject create button
+        const btn = document.createElement('button');
+        btn.className = 'cal-day-create';
+        btn.textContent = '+';
+        btn.setAttribute('aria-label', 'Crear post para el día ' + dayNum);
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          // In production: whatsapp deep-link with pre-filled "quiero crear un post para el día X"
+        };
+        day.appendChild(btn);
+      });
+    });
+  }
+  injectCreateButtons();
+</script>
+</body>
+</html>
