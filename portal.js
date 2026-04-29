@@ -74,6 +74,7 @@
 
     if (resumen.venue) renderVenue(resumen.venue);
     if (resumen.zone1) renderZone1(resumen.zone1, resumen.venue);
+    if (resumen.action_cta) renderActionCta(resumen.action_cta);
   }
 
   function renderVenue(venue) {
@@ -128,6 +129,63 @@
     el.style.display = '';
     setText('.z1-callout-label', data.label, el);
     setText('.z1-callout-val', data.metric, el);
+  }
+
+  // ── Action CTA ────────────────────────────────────────────────────────────
+  // The mockup has one `.cta-<variant>` element per state, all in the DOM at
+  // the same time; CSS uses body[data-state] to show only the matching one.
+  // We populate just the matching block from the API.
+  function renderActionCta(cta) {
+    switch (cta.variant) {
+      case 's0':
+      case 's1':
+      case 's2':
+      case 's3':
+      case 's4':
+      case 'free':
+        renderSimpleCta('.cta-' + cta.variant, cta);
+        break;
+      case 'paid_clear':
+        setText('.cta-paid-clear .cta-title', cta.title);
+        break;
+      case 'paid_pending':
+        renderPaidPending(cta.tasks || []);
+        break;
+    }
+  }
+
+  function renderSimpleCta(scopeSelector, cta) {
+    const root = document.querySelector(scopeSelector);
+    if (!root) return;
+    setText('.cta-title', cta.title, root);
+    setText('.cta-body', cta.body, root);
+    const btn = root.querySelector('.cta-btn');
+    if (btn) {
+      btn.textContent = cta.cta_label;
+      if (cta.cta_href) btn.setAttribute('href', cta.cta_href);
+    }
+  }
+
+  function renderPaidPending(tasks) {
+    const stack = document.querySelector('.cta-paid-pending .cta-stack');
+    if (!stack) return;
+    stack.innerHTML = '';
+    tasks.forEach((task) => {
+      const item = document.createElement('div');
+      item.className = 'cta-item';
+      const titleEl = document.createElement('div');
+      titleEl.className = 'cta-title';
+      titleEl.textContent = task.title;
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'cta-body';
+      bodyEl.textContent = task.body;
+      const btn = document.createElement('a');
+      btn.className = 'cta-btn block';
+      btn.setAttribute('href', task.cta_href || '#');
+      btn.textContent = task.cta_label;
+      item.append(titleEl, bodyEl, btn);
+      stack.appendChild(item);
+    });
   }
 
   // ── tiny helpers ───────────────────────────────────────────────────────────
