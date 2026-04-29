@@ -74,6 +74,7 @@
 
     if (resumen.venue) renderVenue(resumen.venue);
     if (resumen.zone1) renderZone1(resumen.zone1, resumen.venue);
+    if (resumen.competitors) renderCompetitors(resumen.competitors);
     if (resumen.action_cta) renderActionCta(resumen.action_cta);
   }
 
@@ -186,6 +187,229 @@
       item.append(titleEl, bodyEl, btn);
       stack.appendChild(item);
     });
+  }
+
+  // ── Competitors (Zone 2) ──────────────────────────────────────────────────
+  const SVG_IG_ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/>' +
+    '<circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg>';
+  const SVG_FB_ICON =
+    '<svg viewBox="0 0 24 24" fill="currentColor">' +
+    '<path d="M13 22v-8h3l.5-4H13V7.5c0-1.2.4-2 2.1-2H17V2.1C16.6 2 15.6 2 14.5 2c-2.7 0-4.5 1.6-4.5 4.6V10H7v4h3v8z"/>' +
+    '</svg>';
+  const SVG_IG_LARGE =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/></svg>';
+  const SVG_STAR =
+    '<svg viewBox="0 0 24 24" fill="currentColor">' +
+    '<path d="M12 2l3 7h7l-5.5 4.5L18 22l-6-4.5L6 22l1.5-8.5L2 9h7z"/></svg>';
+
+  function renderCompetitors(competitors) {
+    if (!competitors) return;
+
+    // DIRECT bucket — `.bucket` (not collapsible)
+    const directBucket = document.querySelector('.bucket:not(.collapsible)');
+    if (directBucket && competitors.direct) {
+      setText('.bucket-title', competitors.direct.title, directBucket);
+      setText('.bucket-sub', competitors.direct.subtitle, directBucket);
+      directBucket.querySelectorAll('.comp-row').forEach((r) => r.remove());
+      (competitors.direct.rows || []).forEach((row) => {
+        directBucket.insertAdjacentHTML('beforeend', buildCompRowHtml(row));
+      });
+    }
+
+    // OTHER bucket — collapsible
+    const otherBucket = document.querySelector('.collapsible.bucket-collapsible');
+    if (otherBucket && competitors.other) {
+      setText('.bucket-title', competitors.other.title, otherBucket);
+      setText('.bucket-sub', competitors.other.subtitle, otherBucket);
+
+      const previewEl = otherBucket.querySelector('.collapsible-preview');
+      if (previewEl) {
+        previewEl.innerHTML =
+          escapeHtml(competitors.other.preview_names || '') +
+          ' <span class="preview-arrow">abrir ↓</span>';
+      }
+
+      const body = otherBucket.querySelector('.collapsible-body');
+      if (body) {
+        body.innerHTML = '';
+        (competitors.other.rows || []).forEach((row) => {
+          body.insertAdjacentHTML('beforeend', buildCompRowHtml(row));
+        });
+      }
+    }
+  }
+
+  function buildCompRowHtml(row) {
+    const isSelf = !!row.is_self;
+    const rankHtml =
+      row.rank != null
+        ? `<span class="comp-rank">#${escapeHtml(String(row.rank))}</span>`
+        : '';
+    const selfTagHtml = isSelf ? '<span class="comp-self-tag">tú</span>' : '';
+
+    let chipsHtml = '';
+    if (!isSelf) {
+      const distHtml =
+        row.distance_m != null
+          ? `<span class="comp-chip dist">${escapeHtml(formatDistance(row.distance_m))}</span>`
+          : '';
+      const priceHtml = row.price_tier
+        ? `<span class="comp-chip price">${escapeHtml(row.price_tier)}</span>`
+        : '';
+      let socialIconsHtml = '';
+      if (row.social) {
+        const ig = row.social.instagram_linked ? SVG_IG_ICON : '';
+        const fb = row.social.facebook_linked ? SVG_FB_ICON : '';
+        if (ig || fb) {
+          socialIconsHtml =
+            '<span class="social-icons" aria-label="Redes sociales">' +
+            ig + fb +
+            '</span>';
+        }
+      }
+      if (distHtml || priceHtml || socialIconsHtml) {
+        chipsHtml =
+          '<span class="comp-chips">' + distHtml + priceHtml + socialIconsHtml + '</span>';
+      }
+    }
+
+    const ratingClass =
+      row.rating_vs_self === 'higher'
+        ? ' higher'
+        : row.rating_vs_self === 'lower'
+        ? ' lower'
+        : '';
+    const ratingHtml = `<span class="comp-rating${ratingClass}">${escapeHtml(formatRating(row.google_rating))}</span>`;
+
+    let trendHtml = '';
+    if (row.trend) {
+      const dir = row.trend.direction;
+      const arrow = dir === 'up' ? '↑' : dir === 'down' ? '↓' : '→';
+      const cls = dir === 'up' ? 'up' : dir === 'down' ? 'down' : 'flat';
+      trendHtml = `<span class="comp-trend ${cls}">${arrow} ${escapeHtml(formatTrendDelta(row.trend.delta))}</span>`;
+    }
+
+    const expandBtnHtml = !isSelf ? '<button class="comp-expand-btn">▾</button>' : '';
+    const onclickAttr = !isSelf
+      ? ' onclick="this.classList.toggle(\'open\')"'
+      : '';
+    const rowClass = isSelf ? 'comp-row is-self' : 'comp-row';
+    const detailHtml = !isSelf && row.detail ? buildCompDetailHtml(row.detail) : '';
+
+    return (
+      `<div class="${rowClass}"${onclickAttr}>` +
+        '<div class="comp-main">' +
+          '<div class="comp-left">' +
+            rankHtml +
+            `<span class="comp-name">${escapeHtml(row.name || '')}${selfTagHtml}</span>` +
+            chipsHtml +
+          '</div>' +
+          '<div class="comp-right">' +
+            ratingHtml +
+            trendHtml +
+            expandBtnHtml +
+          '</div>' +
+        '</div>' +
+        detailHtml +
+      '</div>'
+    );
+  }
+
+  function buildCompDetailHtml(detail) {
+    const g = detail.google || {};
+
+    let summaryHtml = '';
+    if (g.destacan || g.quejas) {
+      const parts = [];
+      if (g.destacan) parts.push(`<strong>Destacan:</strong> ${escapeHtml(g.destacan)}.`);
+      if (g.quejas) parts.push(`<strong>Quejas:</strong> ${escapeHtml(g.quejas)}.`);
+      summaryHtml = `<div class="g-summary">${parts.join(' ')}</div>`;
+    }
+
+    let distHtml = '';
+    if (g.star_distribution && g.star_distribution.length > 0) {
+      const map = {};
+      g.star_distribution.forEach((d) => {
+        map[d.stars] = d.pct;
+      });
+      const rows = [5, 4, 3, 2, 1]
+        .map((s) => {
+          const pct = Number(map[s] || 0);
+          return (
+            '<div class="g-dist-row">' +
+              `<span class="g-dist-stars">${s}</span>` +
+              `<div class="g-dist-bar"><div class="fill" style="width:${pct}%"></div></div>` +
+            '</div>'
+          );
+        })
+        .join('');
+      distHtml = `<div class="g-dist">${rows}</div>`;
+    }
+
+    const googleInner =
+      summaryHtml || distHtml
+        ? `<div class="google-detail">${summaryHtml}${distHtml}</div>`
+        : '';
+    const reviewCountStr =
+      g.review_count != null ? formatInt(g.review_count) + ' reseñas' : '';
+    const googleBlock =
+      '<div class="detail-block">' +
+        `<div class="detail-title">${SVG_STAR}GOOGLE${reviewCountStr ? ' · ' + reviewCountStr : ''}</div>` +
+        googleInner +
+      '</div>';
+
+    const sd = detail.social || {};
+    let socialItems = '';
+    if (sd.instagram) {
+      socialItems +=
+        '<div class="social-detail-item">' +
+          SVG_IG_LARGE +
+          ` IG · <strong>${escapeHtml(formatCompactNumber(sd.instagram.followers))}</strong> seguidores · ` +
+          `<strong>${formatInt(sd.instagram.posts)}</strong> posts` +
+        '</div>';
+    }
+    if (sd.facebook) {
+      socialItems +=
+        '<div class="social-detail-item">' +
+          SVG_FB_ICON +
+          ` FB · <strong>${escapeHtml(formatCompactNumber(sd.facebook.followers))}</strong> · ` +
+          `<strong>${formatInt(sd.facebook.posts)}</strong> posts` +
+        '</div>';
+    }
+    if (!socialItems) {
+      socialItems =
+        '<div class="social-detail-item" style="color: var(--mid); font-style: italic;">Sin perfiles sociales</div>';
+    }
+    const socialBlock =
+      '<div class="detail-block">' +
+        '<div class="detail-title">REDES</div>' +
+        `<div class="social-detail">${socialItems}</div>` +
+      '</div>';
+
+    return `<div class="comp-detail">${googleBlock}${socialBlock}</div>`;
+  }
+
+  function formatDistance(m) {
+    if (m == null) return '';
+    if (m >= 1000) return (m / 1000).toFixed(1).replace('.0', '') + 'km';
+    return Math.round(m) + 'm';
+  }
+
+  function formatCompactNumber(n) {
+    if (n == null) return '0';
+    if (n >= 1000) return (n / 1000).toFixed(1).replace('.0', '') + 'k';
+    return String(n);
+  }
+
+  function formatTrendDelta(delta) {
+    if (delta == null) return '0';
+    const num = Number(delta);
+    if (num === 0) return '0';
+    if (num > 0) return '+' + num.toFixed(1);
+    return num.toFixed(1);
   }
 
   // ── tiny helpers ───────────────────────────────────────────────────────────
