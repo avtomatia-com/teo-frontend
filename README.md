@@ -10,7 +10,7 @@ Static owner portal for [Teo](https://teo.chat), an AI-powered WhatsApp assistan
 
 ```
 teo-frontend/
-├── portal-homepage-mockup.html   ← single-file design mockup (will be split into index/css/js)
+├── index.html                    ← single-file design mockup (will be split into index/css/js)
 ├── RESUMEN_CONTRACT.md            ← API contract for GET /portal/{venue_slug}/resumen
 └── README.md
 ```
