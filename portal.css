@@ -2750,3 +2750,31 @@
     opacity: 0.55;
   }
 
+
+  /* ════════════════════════════════════════════
+     PORTAL ERROR OVERLAY (network/auth/404 states)
+     ════════════════════════════════════════════ */
+  .portal-error {
+    height: 100%;
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 28px;
+    text-align: center;
+    color: var(--ink);
+  }
+  .portal-error-brand {
+    font-family: var(--font-display);
+    font-size: 28px;
+    margin-bottom: 18px;
+    letter-spacing: 0.02em;
+  }
+  .portal-error-msg {
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 280px;
+  }
