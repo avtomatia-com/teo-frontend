@@ -10,10 +10,14 @@ Static owner portal for [Teo](https://teo.chat), an AI-powered WhatsApp assistan
 
 ```
 teo-frontend/
-├── index.html                    ← single-file design mockup (will be split into index/css/js)
-├── RESUMEN_CONTRACT.md            ← API contract for GET /portal/{venue_slug}/resumen
+├── index.html              ← portal markup (8 fixture states, demo state-switcher at the top)
+├── portal.css              ← all styles
+├── portal.js               ← state-switcher + collapsibles + calendar UI logic
+├── RESUMEN_CONTRACT.md     ← API contract for GET /portal/{venue_slug}/resumen
 └── README.md
 ```
+
+The portal currently renders **fixture data** for every progressive state (s0 → free). Wiring `fetch()` to the live `/portal/{slug}/resumen` endpoint is the next slice.
 
 ## Deployment
 
