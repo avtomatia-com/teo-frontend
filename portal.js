@@ -65,15 +65,83 @@
   //  competitors, action_cta, etc. — for now those keep their fixture content.
   // ───────────────────────────────────────────────────────────────────────────
   function applyResumen(resumen) {
-    if (resumen && resumen.state) {
-      document.body.dataset.state = resumen.state;
-    }
-    if (resumen && resumen.venue && resumen.venue.name) {
-      const tag = document.querySelector('.venue-tag');
-      if (tag) tag.textContent = resumen.venue.name;
-    }
+    if (!resumen) return;
+
+    if (resumen.state) document.body.dataset.state = resumen.state;
+
     const labHeader = document.querySelector('.lab-header');
     if (labHeader) labHeader.style.display = 'none';
+
+    if (resumen.venue) renderVenue(resumen.venue);
+    if (resumen.zone1) renderZone1(resumen.zone1, resumen.venue);
+  }
+
+  function renderVenue(venue) {
+    const tag = document.querySelector('.venue-tag');
+    if (tag && venue.name) tag.textContent = venue.name;
+  }
+
+  function renderZone1(zone1, venue) {
+    setText('.z1-venue', venue && venue.name ? venue.name : '');
+
+    // "Malasaña · Cena · €€" — drop price_tier if null
+    const metaParts = [zone1.neighbourhood, zone1.occasion_label];
+    if (zone1.price_tier) metaParts.push(zone1.price_tier);
+    setText('.z1-meta', metaParts.filter(Boolean).join(' · '));
+
+    setText('.z1-rating', formatRating(zone1.google_rating));
+    setText('.z1-stars', zone1.star_row || '');
+    setText(
+      '.z1-reviews',
+      `${formatInt(zone1.google_review_count)} reseñas · Google`
+    );
+
+    if (zone1.ranking) {
+      setText(
+        '.z1-ranking-val',
+        `${zone1.ranking.own_rank}º de ${zone1.ranking.bucket_size} locales`
+      );
+    }
+
+    renderCallout('.z1-callout.up', zone1.callouts && zone1.callouts.up);
+    renderCallout('.z1-callout.down', zone1.callouts && zone1.callouts.down);
+
+    // Hide the wrapper if both callouts are absent
+    const wrapper = document.querySelector('.z1-callouts');
+    if (wrapper) {
+      const anyVisible = wrapper.querySelector(
+        '.z1-callout:not([data-empty="true"])'
+      );
+      wrapper.style.display = anyVisible ? '' : 'none';
+    }
+  }
+
+  function renderCallout(selector, data) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    if (!data) {
+      el.dataset.empty = 'true';
+      el.style.display = 'none';
+      return;
+    }
+    el.dataset.empty = 'false';
+    el.style.display = '';
+    setText('.z1-callout-label', data.label, el);
+    setText('.z1-callout-val', data.metric, el);
+  }
+
+  // ── tiny helpers ───────────────────────────────────────────────────────────
+  function setText(selector, value, root) {
+    const el = (root || document).querySelector(selector);
+    if (el) el.textContent = value == null ? '' : String(value);
+  }
+  function formatRating(n) {
+    if (n == null) return '—';
+    return Number(n).toFixed(1);
+  }
+  function formatInt(n) {
+    if (n == null) return '0';
+    return Number(n).toLocaleString('es-ES');
   }
 
   function showError(msg) {
