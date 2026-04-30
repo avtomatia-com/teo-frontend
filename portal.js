@@ -31,7 +31,7 @@
       const newUrl = location.pathname + (qs ? '?' + qs : '') + location.hash;
       history.replaceState(null, '', newUrl);
     }
-    fetchResumen(slug, token);
+    fetchResumen(slug, token).then(() => fetchResenas(slug, token));
   } else {
     initUi();
   }
@@ -403,6 +403,151 @@
       '</div>';
 
     return `<div class="comp-detail">${googleBlock}${socialBlock}</div>`;
+  }
+
+  // ── Reseñas tab (Reseñas page) ────────────────────────────────────────────
+  // See RESENAS_CONTRACT.md. Fired after the Resumen call; failure is
+  // swallowed because the rest of the portal still works without reviews.
+  async function fetchResenas(slug, token) {
+    let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resenas`;
+    if (token) url += `?t=${encodeURIComponent(token)}`;
+    let resp;
+    try {
+      resp = await fetch(url, { credentials: 'include' });
+    } catch (_err) {
+      return;
+    }
+    if (!resp.ok) return;
+    let body;
+    try {
+      body = await resp.json();
+    } catch (_err) {
+      return;
+    }
+    renderResenas(body);
+  }
+
+  function renderResenas(data) {
+    if (!data) return;
+
+    const showcase = document.querySelector('.rev-showcase');
+    if (showcase) {
+      const cards = data.showcase || [];
+      // Keep the ASCII label + the closing CTA item, replace the review rows.
+      showcase.querySelectorAll('.review-row').forEach((r) => r.remove());
+      const ctaAnchor = showcase.querySelector('.cta-item');
+      cards.forEach((card) => {
+        const html = buildReviewRowHtml(card, { showcase: true });
+        if (ctaAnchor) ctaAnchor.insertAdjacentHTML('beforebegin', html);
+        else showcase.insertAdjacentHTML('beforeend', html);
+      });
+    }
+
+    const unanswered = document.querySelector('.rev-unanswered');
+    if (unanswered) {
+      unanswered.querySelectorAll('.review-row').forEach((r) => r.remove());
+      (data.pending || []).forEach((card) => {
+        unanswered.insertAdjacentHTML(
+          'beforeend',
+          buildReviewRowHtml(card, { withAction: true })
+        );
+      });
+      // Hide the whole block if there's nothing pending — keeps the "Todo
+      // al día" badge visible on its own (paid_clear).
+      if ((data.pending || []).length === 0) {
+        unanswered.style.display = 'none';
+      }
+    }
+
+    const answered = document.querySelector('.rev-answered');
+    if (answered) {
+      answered.querySelectorAll('.review-row').forEach((r) => r.remove());
+      (data.answered || []).forEach((card) => {
+        answered.insertAdjacentHTML(
+          'beforeend',
+          buildReviewRowHtml(card, { answered: true })
+        );
+      });
+    }
+
+    if (data.mode_chip) {
+      setText('.mode-chip-value', stripModePrefix(data.mode_chip.title));
+      setText('.mode-chip-tagline', data.mode_chip.tagline);
+      const editLink = document.querySelector('.mode-chip-edit');
+      if (editLink && data.mode_chip.cta_href) {
+        editLink.setAttribute('href', data.mode_chip.cta_href);
+      }
+    }
+  }
+
+  function buildReviewRowHtml(card, opts) {
+    opts = opts || {};
+    const stars = card.star_row || '';
+    const lowClass =
+      (card.star_rating || 0) <= 3 ? ' low' : '';
+    const dateText = card.review_date ? formatRelativeDate(card.review_date) : '';
+    const metaText = [dateText, 'Google'].filter(Boolean).join(' · ');
+
+    const draftBlock = card.draft_text
+      ? '<div class="teo-draft">' +
+          '<div class="teo-draft-label">▸ Teo respondería</div>' +
+          `<div class="teo-draft-text">${escapeHtml(card.draft_text)}</div>` +
+        '</div>'
+      : '';
+
+    let actionsBlock = '';
+    if (opts.answered && card.draft_text) {
+      actionsBlock =
+        '<div class="teo-response">' +
+          '<div class="teo-response-label">▸ Teo respondió</div>' +
+          escapeHtml(card.draft_text) +
+        '</div>';
+    } else if (opts.withAction && card.cta_href) {
+      actionsBlock =
+        '<div class="review-actions">' +
+          `<a href="${escapeHtml(card.cta_href)}" class="cta-btn">Revisar →</a>` +
+        '</div>';
+    }
+
+    // Answered block uses `.teo-response` instead of `.teo-draft`
+    const innerDraft = opts.answered ? '' : draftBlock;
+
+    return (
+      '<div class="review-row">' +
+        '<div class="review-head">' +
+          '<div class="review-left">' +
+            `<div class="review-author">${escapeHtml(card.reviewer_name || 'Anónimo')}</div>` +
+            `<div class="review-meta">${escapeHtml(metaText)}</div>` +
+          '</div>' +
+          `<div class="review-stars${lowClass}">${escapeHtml(stars)}</div>` +
+        '</div>' +
+        (card.review_text
+          ? `<div class="review-text">${escapeHtml(card.review_text)}</div>`
+          : '') +
+        innerDraft +
+        actionsBlock +
+      '</div>'
+    );
+  }
+
+  function stripModePrefix(title) {
+    // "Modo · Mixto" → "Mixto"
+    if (!title) return '';
+    const idx = title.indexOf('·');
+    return idx >= 0 ? title.slice(idx + 1).trim() : title;
+  }
+
+  function formatRelativeDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+    if (days <= 0) return 'Hoy';
+    if (days === 1) return 'Hace 1 día';
+    if (days < 7) return `Hace ${days} días`;
+    if (days < 14) return 'Hace 1 semana';
+    if (days < 30) return `Hace ${Math.floor(days / 7)} semanas`;
+    if (days < 60) return 'Hace 1 mes';
+    return `Hace ${Math.floor(days / 30)} meses`;
   }
 
   function formatDistance(m) {
