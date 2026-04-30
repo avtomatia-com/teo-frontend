@@ -1682,8 +1682,8 @@
           </div>
         </div>
 
-        <!-- Plan y facturación -->
-        <div class="collapsible settings-group" data-expanded="false">
+        <!-- Plan y facturación — only after conversion (paid / paid_clear) -->
+        <div class="collapsible settings-group settings-paid-only" data-expanded="false">
           <div class="collapsible-trigger">
             <div class="settings-group-title">Plan y facturación</div>
             <div class="collapsible-preview">Tapa · €49/mes · próximo cargo 15/05 <span class="preview-arrow">abrir ↓</span></div>
@@ -1720,8 +1720,8 @@
           </div>
         </div>
 
-        <!-- Historial facturación -->
-        <div class="collapsible settings-group" data-expanded="false">
+        <!-- Historial facturación — only after the first bill (paid / paid_clear) -->
+        <div class="collapsible settings-group settings-paid-only" data-expanded="false">
           <div class="collapsible-trigger">
             <div class="settings-group-title">Historial de facturas</div>
             <div class="collapsible-preview">4 facturas · última 15 abr €49 <span class="preview-arrow">abrir ↓</span></div>
@@ -1750,86 +1750,15 @@
           </div>
         </div>
 
-        <!-- Referidos -->
-        <div class="collapsible settings-group" data-expanded="false">
-          <div class="collapsible-trigger">
-            <div class="settings-group-title">Referidos</div>
-            <div class="collapsible-preview">5 enviados · 2 convertidos · 2 meses gratis ganados <span class="preview-arrow">abrir ↓</span></div>
-          </div>
-          <div class="collapsible-body">
-
-          <div class="ref-banner">
-            <div class="ref-code">ANGELMIGUEL-4821</div>
-            <div class="ref-url">teo.chat/r/ANGELMIGUEL-4821</div>
-
-            <div class="ref-stats">
-              <div>
-                <div class="ref-stat-label">Enviados</div>
-                <div class="ref-stat-value">5</div>
-              </div>
-              <div>
-                <div class="ref-stat-label">Convertidos</div>
-                <div class="ref-stat-value">2</div>
-              </div>
-              <div>
-                <div class="ref-stat-label">Meses gratis</div>
-                <div class="ref-stat-value">2</div>
-              </div>
-            </div>
-
-            <a href="#" class="cta-btn block">Copiar enlace</a>
-          </div>
-
-          <div class="ref-how">
-            <strong>Cómo funciona:</strong> por cada local que se suscriba usando tu enlace, te regalo un mes gratis de Teo. El local referido recibe su primer mes de pago también gratis, además del mes de prueba habitual.
-          </div>
-          </div>
-        </div>
-
-        <!-- Comunicaciones -->
-        <div class="collapsible settings-group" data-expanded="false">
-          <div class="collapsible-trigger">
-            <div class="settings-group-title">Comunicaciones</div>
-            <div class="collapsible-preview">Boletín HORECA activo · informe impreso pausado · QR <span class="preview-arrow">abrir ↓</span></div>
-          </div>
-          <div class="collapsible-body">
-          <div class="setting-row">
-            <div class="setting-left">
-              <div class="setting-label">Boletín semanal HORECA</div>
-              <div class="setting-value">Resumen semanal de noticias del sector por email.</div>
-            </div>
-            <div class="setting-right">
-              <div class="toggle on" onclick="this.classList.toggle('on');"></div>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-left">
-              <div class="setting-label">Informe mensual impreso</div>
-              <div class="setting-value">Resumen en papel por Correos el día 1 de cada mes.</div>
-            </div>
-            <div class="setting-right">
-              <div class="toggle" onclick="this.classList.toggle('on');"></div>
-            </div>
-          </div>
-          <div class="setting-row tappable">
-            <div class="setting-left">
-              <div class="setting-label">Pack de QR para el local</div>
-              <div class="setting-value">Pegatinas y tarjetas con el QR del local para pedir reseñas.</div>
-            </div>
-            <div class="setting-right"><span class="setting-arrow">Pedir →</span></div>
-          </div>
-          </div>
-        </div>
-
-        <!-- Danger zone -->
+        <!-- Danger zone — pre-paid only shows session + account delete -->
         <div class="collapsible danger-section" data-expanded="false">
           <div class="collapsible-trigger">
             <div class="danger-label">ZONA DELICADA</div>
-            <div class="collapsible-preview">Pausar · cancelar · cerrar sesión · borrar cuenta <span class="preview-arrow">abrir ↓</span></div>
+            <div class="collapsible-preview"><span class="settings-paid-only">Pausar · cancelar · </span>cerrar sesión · borrar cuenta <span class="preview-arrow">abrir ↓</span></div>
           </div>
           <div class="collapsible-body">
 
-          <div class="setting-row tappable danger-row">
+          <div class="setting-row tappable danger-row settings-paid-only">
             <div class="setting-left">
               <div class="setting-label">Pausar cuenta por vacaciones</div>
               <div class="setting-value">Teo para todo durante los días que indiques. El plan no se cobra mientras esté pausado.</div>
@@ -1837,7 +1766,7 @@
             <div class="setting-right"><span class="setting-arrow">WhatsApp →</span></div>
           </div>
 
-          <div class="setting-row tappable danger-row">
+          <div class="setting-row tappable danger-row settings-paid-only">
             <div class="setting-left">
               <div class="setting-label">Cancelar suscripción</div>
               <div class="setting-value">Bajas a plan gratis al final del mes actual.</div>

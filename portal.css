@@ -2009,6 +2009,14 @@
      ════════════════════════════════════════════ */
   body[data-page="settings"] .page-settings { display: block; }
 
+  /* Plan/Historial sections + their preview chips + the "Pausar" /
+     "Cancelar" rows in the danger zone are gated to paid states.
+     Pre-paid (s0..s4 / free) hides them entirely so the settings page
+     stays focused on the parts the owner can act on at that stage. */
+  body:not([data-state="paid"]):not([data-state="paid_clear"]) .settings-paid-only {
+    display: none;
+  }
+
   .settings-group {
     margin-bottom: 16px;
   }
@@ -2099,100 +2107,6 @@
     background: var(--paper-2);
     border-color: var(--line);
   }
-
-  /* Toggle switch */
-  .toggle {
-    width: 36px;
-    height: 20px;
-    border-radius: 20px;
-    background: var(--paper-2);
-    border: 1px solid var(--line);
-    position: relative;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-  .toggle::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--mid);
-    transition: all 0.15s;
-  }
-  .toggle.on {
-    background-color: var(--paper);
-    background-image: radial-gradient(circle at center, var(--wa) 1.0px, transparent 1.15px);
-    background-size: 1.75px 1.75px;
-    border-color: var(--wa);
-  }
-  .toggle.on::after {
-    left: auto;
-    right: 1px;
-    background: var(--paper);
-  }
-
-  /* Referral banner */
-  .ref-banner {
-    padding: 12px 14px;
-    border: 1.5px solid var(--ink);
-    background-color: var(--paper);
-    margin-bottom: 10px;
-  }
-  .ref-code {
-    font-family: var(--font-display);
-    font-size: 22px;
-    letter-spacing: 0.06em;
-    color: var(--ink);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .ref-url {
-    font-family: var(--font-body);
-    font-size: 11px;
-    color: var(--ink-soft);
-    margin-bottom: 10px;
-    word-break: break-all;
-    line-height: 1.4;
-  }
-  .ref-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    padding-top: 10px;
-    border-top: 1px dashed var(--line);
-    margin-bottom: 10px;
-  }
-  .ref-stat-label {
-    font-family: var(--font-display);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--mid);
-    line-height: 1.1;
-  }
-  .ref-stat-value {
-    font-family: var(--font-display);
-    font-size: 22px;
-    line-height: 1;
-    margin-top: 3px;
-    color: var(--ink);
-  }
-
-  .ref-how {
-    font-size: 11px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-    padding: 8px 10px;
-    background-color: var(--paper);
-    background-image: radial-gradient(circle at center, rgba(26,26,26,0.35) 0.55px, transparent 0.75px);
-    background-size: 1.75px 1.75px;
-    border: 1px dashed var(--line);
-  }
-  .ref-how strong { color: var(--ink); }
 
   /* Billing invoice row */
   .invoice-row {
