@@ -672,19 +672,36 @@
     text-align: right;
   }
 
-  .z1-ranking { margin-bottom: 12px; }
+  .z1-ranking {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
   .z1-ranking-label {
     font-family: var(--font-display);
     font-size: 13px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--mid);
-    margin-bottom: 2px;
   }
   .z1-ranking-val {
     font-family: var(--font-display);
     font-size: 18px;
   }
+  .z1-foreign-chip {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    padding: 2px 8px;
+    line-height: 1.5;
+    margin-left: auto;
+  }
+  .z1-foreign-chip[hidden] { display: none; }
 
   .z1-callouts { display: flex; flex-direction: column; gap: 6px; }
   .z1-callout {

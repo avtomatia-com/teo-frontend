@@ -118,6 +118,8 @@
       );
     }
 
+    renderForeignChip(zone1.foreign_patrons);
+
     renderCallout('.z1-callout.up', zone1.callouts && zone1.callouts.up);
     renderCallout('.z1-callout.down', zone1.callouts && zone1.callouts.down);
 
@@ -129,6 +131,33 @@
       );
       wrapper.style.display = anyVisible ? '' : 'none';
     }
+  }
+
+  // Map ISO 639-1 → tiny human label for the chip. Anything not listed
+  // surfaces with its uppercase code (rare; 90%+ of non-Spanish reviews
+  // will be EN/FR/IT/DE/PT/ZH/JA/RU based on Madrid-area data).
+  const LANG_LABEL = {
+    en: 'EN', fr: 'FR', it: 'IT', de: 'DE', pt: 'PT',
+    zh: 'ZH', 'zh-cn': 'ZH', 'zh-tw': 'ZH', ja: 'JA',
+    ko: 'KO', ru: 'RU', ar: 'AR', nl: 'NL', pl: 'PL',
+    ca: 'CA', tr: 'TR', uk: 'UK',
+  };
+
+  function renderForeignChip(data) {
+    const chip = document.querySelector('.z1-foreign-chip');
+    if (!chip) return;
+    if (!data || !data.foreign_pct) {
+      chip.hidden = true;
+      chip.textContent = '';
+      return;
+    }
+    const breakdown = (data.top_languages || [])
+      .map((l) => `${LANG_LABEL[l.lang] || l.lang.toUpperCase()} ${l.pct}%`)
+      .join(' · ');
+    chip.textContent = breakdown
+      ? `${data.foreign_pct}% extranjeros · ${breakdown}`
+      : `${data.foreign_pct}% extranjeros`;
+    chip.hidden = false;
   }
 
   function renderCallout(selector, data) {
