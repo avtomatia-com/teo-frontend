@@ -85,12 +85,18 @@ type WeeklyDeltaPaid = {
   variant:        "paid";
   iso_week:       number;            // 1..53 — drives "Sem. 15"
   month_label:    string;            // localised short month, e.g. "Abr"
-  // Left column "TEO HIZO" — exactly 3 bullet rows in the mockup.
+  // Left column "TEO HIZO" — bullet rows. Server filters out zero-count
+  // rows ("Respondió 0 reseñas", etc.) per spec §31.11, so the array can be
+  // 1–3 entries OR EMPTY. When empty, the front-end hides the label and the
+  // vertical divider so RESULTADOS occupies the full width — never render a
+  // hollow "TEO HIZO" heading with no rows under it.
   teo_hizo:       { text: string }[];
   // Right column "RESULTADOS" — 1..N short metric lines, each rendered VT323 17px.
   resultados:     { text: string; sign: "pos" | "neg" | "neutral" }[];
   // Single full-width comparative line below the two columns.
-  comparative:    string | null;     // e.g. "Bar La Paloma respondió 12 · tú 8 con Teo"
+  comparative:    string | null;     // e.g. "Bar La Paloma sigue en 4.4 · tú con Teo respondiste 8 reseñas esta semana"
+                                     // null when reviews_responded == 0 (zero-count comparative
+                                     // is the same churn fuel as zero TEO HIZO rows — §31.11).
 };
 
 // Variant B — paid all-clear. Same structure, compressed.
@@ -98,6 +104,7 @@ type WeeklyDeltaPaidClear = {
   variant:        "paid_clear";
   iso_week:       number;
   month_label:    string;
+  // Same zero-count filter as variant A — array may be empty.
   teo_hizo:       { text: string }[];
   resultados:     { text: string; sign: "pos" | "neg" | "neutral" }[];
   // Bottom line replaces `comparative` — see §31.11.
@@ -125,23 +132,21 @@ type WeeklyDeltaFree = {
 };
 ```
 
-| Field | Source (MVP / when WF4 lands) |
+| Field | Source |
 |---|---|
-| `variant` | derived from `state` + `subscription_tier` + pending-task count |
-| `iso_week`, `month_label` | server clock (Europe/Madrid) at request time |
-| `teo_hizo[]` | aggregations from `reviews.posted_at`, `scheduled_posts.published_at`, `whatsapp_interactions.count` over the last 7 days |
-| `resultados[]` | diff of current vs previous-Monday snapshot of `venues.google_rating` and `venues.google_review_count` |
-| `comparative` | top-1 competitor (`venue_competitors.bucket='direct'` joined with `venues`) — name + same metric |
-| `headline` (FREE) | hand-templated against the anchor competitor name |
-| `trend_rows` (FREE) | 4-week history from `portal_weekly_delta` derived table once WF4 starts writing it; placeholder until then |
-| `insight` (FREE) | Claude Sonnet generation, written by WF4 |
+| `variant` | picked at WF4 write-time from `subscription_tier` + `payment_state` + pending-task count. `paid` for trial/pending venues so they get the value-receipt frame before conversion. |
+| `iso_week`, `month_label` | ISO-week of the snapshot row (`portal_weekly_delta.iso_week`). Month label is localised Spanish (Ene…Dic). |
+| `teo_hizo[]` | 7-day aggregations from `reviews.posted_at` (owner_responded), `scheduled_posts.posted_at` (status='posted'), `whatsapp_interactions.created_at`, bounded `[week_monday-7d, week_monday)` so backdated WF4 runs don't leak future activity. **Zero-count rows are filtered server-side per §31.11; the array can be empty.** |
+| `resultados[]` | diff of current vs previous-Monday snapshot of `venues.google_rating` and `venues.google_review_count`. On the first run with no prior snapshot, returns a neutral "primera semana · sin histórico aún" placeholder line. |
+| `comparative` | top-1 direct competitor (`venue_competitors.bucket='direct'` joined with `venues`) — name + their current rating. Suppressed (`null`) when `reviews_responded == 0` per §31.11. |
+| `headline` (FREE) | deterministic template: *"{competitor_name} sigue ganando terreno"*. Anchored on the highest-rated direct competitor. |
+| `trend_rows` (FREE) | up to 4 prior `portal_weekly_delta` rows for the venue. **Known MVP limitation:** `competitor_rating` is the *current* anchor competitor rating across all 4 weeks (we don't snapshot competitor history yet). |
+| `insight` (FREE) | deterministic gap-line in MVP. Sonnet generation is post-MVP. |
 
 **Progressive availability (§31.5 / §31.11):**
 - **S0** — `weekly_delta = null`. No widget rendered.
-- **S1** before first Monday post-onboarding — `weekly_delta = null` for now (the v21 "Tu primer resumen aparecerá el próximo lunes" placeholder was deleted in v23).
-- **S2+ paid / paid_clear / free** — populated once WF4 has run at least once.
-
-> **MVP shortcut:** until WF4 ships, the endpoint can return `weekly_delta = null` for every state. The Resumen tab continues to render correctly without the widget.
+- **Post-S0 trial** before the first Monday tick of WF4 — `weekly_delta = null` (no row in `portal_weekly_delta` yet). Widget hidden until WF4 fires.
+- **All states once WF4 has run at least once** — populated.
 
 ---
 
@@ -280,7 +285,11 @@ type ActionCta =
       // owner has a concrete reason to give us Google access. Falls back to
       // the plain `s0` variant when nothing has been drafted yet.
       variant: "s0_showcase";
-      intro: string;        // e.g. "Tienes 8 reseñas sin responder · esta es la más urgente:"
+      // Always uses the "más de N" hedge — the count comes from a bounded
+      // Outscraper sample (50–200 newest reviews) at WF0 step-4, not the
+      // full Google history, so dropping the hedge would falsely imply the
+      // count is exhaustive. Spec §31.5.
+      intro: string;        // e.g. "Tienes más de 8 reseñas sin responder · esta es la más urgente:"
       review: {
         id: string;
         reviewer_name: string;
@@ -296,6 +305,13 @@ type ActionCta =
       cta_href: string;     // wa.me deep-link tagged with the review id
     }
   | { variant: "s0"; title: string; body: string; cta_label: string; cta_href: string }
+  // S1 has two server-side flavours, both fitting this same shape:
+  //   - "draft ready": title "Prepara tu primer post", body points at an
+  //     actual prepared post (acquisition pre-seed, future WF3, etc.) —
+  //     handler reads `scheduled_posts` at portal-prep time per §31.5.
+  //   - "fallback": title "Conecta tus redes para el primer post" when no
+  //     scheduled_posts row exists. Front-end renders both identically; only
+  //     copy differs.
   | { variant: "s1"; title: string; body: string; cta_label: string; cta_href: string }
   | { variant: "s2"; title: string; body: string; cta_label: string; cta_href: string }
   | { variant: "s3"; title: string; body: string; cta_label: string; cta_href: string }
