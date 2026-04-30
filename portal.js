@@ -430,6 +430,9 @@
   function renderResenas(data) {
     if (!data) return;
 
+    if (data.google_summary) renderGoogleSummary(data.google_summary);
+    if (data.answered_summary) renderAnsweredSummary(data.answered_summary);
+
     const showcase = document.querySelector('.rev-showcase');
     if (showcase) {
       const cards = data.showcase || [];
@@ -478,6 +481,97 @@
         editLink.setAttribute('href', data.mode_chip.cta_href);
       }
     }
+  }
+
+  function renderGoogleSummary(g) {
+    // Find the GOOGLE collapsible — first .collapsible inside .page-reviews
+    // whose ascii-label says GOOGLE.
+    const collapsible = findCollapsibleByLabel('GOOGLE');
+    if (!collapsible) return;
+
+    // Preview line: "4.2★ · 187 reseñas · 18 nuevas este mes"
+    const preview = collapsible.querySelector('.collapsible-preview');
+    if (preview) {
+      const parts = [];
+      if (g.google_rating != null) parts.push(formatRating(g.google_rating) + '★');
+      if (g.google_review_count != null)
+        parts.push(formatInt(g.google_review_count) + ' reseñas');
+      if (g.new_this_month) parts.push(g.new_this_month + ' nuevas este mes');
+      preview.innerHTML =
+        escapeHtml(parts.join(' · ')) +
+        ' <span class="preview-arrow">abrir ↓</span>';
+    }
+
+    setText('.g-big-rating', formatRating(g.google_rating), collapsible);
+    setText('.g-big-stars', g.star_row || '', collapsible);
+    setText('.g-big-count', formatInt(g.google_review_count) + ' reseñas', collapsible);
+
+    // Star distribution bars
+    const distMap = {};
+    (g.star_distribution || []).forEach((d) => {
+      distMap[d.stars] = d.pct;
+    });
+    [5, 4, 3, 2, 1].forEach((stars, idx) => {
+      const row = collapsible.querySelectorAll('.g-summary-dist .g-dist-row')[idx];
+      if (!row) return;
+      const fill = row.querySelector('.fill');
+      if (fill) fill.style.width = (distMap[stars] || 0) + '%';
+    });
+
+    // Highlights — destacan / quejas. Hide rows we don't have content for.
+    const rows = collapsible.querySelectorAll('.g-summary-highlights .g-highlight-row');
+    rows.forEach((row) => {
+      const label = (row.querySelector('.g-highlight-label')?.textContent || '').toLowerCase();
+      const textEl = row.querySelector('.g-highlight-text');
+      if (!textEl) return;
+      if (label === 'destacan') {
+        if (g.destacan) textEl.textContent = g.destacan;
+        row.style.display = g.destacan ? '' : 'none';
+      } else if (label === 'quejas') {
+        if (g.quejas) textEl.textContent = g.quejas;
+        row.style.display = g.quejas ? '' : 'none';
+      } else {
+        // "Patrón" row — we don't generate this yet, hide it.
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  function renderAnsweredSummary(s) {
+    const collapsible = findCollapsibleByLabel('RESPONDIDAS');
+    if (!collapsible) return;
+    const preview = collapsible.querySelector('.collapsible-preview');
+    if (!preview) return;
+
+    if (!s.count) {
+      preview.innerHTML =
+        'Sin respuestas todavía <span class="preview-arrow">abrir ↓</span>';
+      return;
+    }
+    const parts = [s.count + ' contestada' + (s.count === 1 ? '' : 's')];
+    if (s.days_since != null) {
+      const ago =
+        s.days_since === 0
+          ? 'hoy'
+          : s.days_since === 1
+          ? 'hace 1 día'
+          : 'hace ' + s.days_since + ' días';
+      parts.push('última ' + ago);
+    }
+    preview.innerHTML =
+      escapeHtml(parts.join(' · ')) +
+      ' <span class="preview-arrow">abrir ↓</span>';
+  }
+
+  function findCollapsibleByLabel(label) {
+    const page = document.querySelector('.page-reviews');
+    if (!page) return null;
+    const collapsibles = page.querySelectorAll(':scope > .collapsible');
+    for (const c of collapsibles) {
+      const lbl = c.querySelector('.ascii-label');
+      if (lbl && lbl.textContent.trim().toUpperCase() === label) return c;
+    }
+    return null;
   }
 
   function buildReviewRowHtml(card, opts) {

@@ -15,6 +15,10 @@ type ResenasResponse = {
   state: "s0" | "s1" | "s2" | "s3" | "s4" | "paid" | "paid_clear" | "free";
   venue: VenueIdentity;          // same shape as /resumen
 
+  // Top-of-tab GOOGLE collapsible — own venue rating, distribution,
+  // destacan/quejas. Always present.
+  google_summary: GoogleSummary;
+
   // S0 only — two-card "Así respondería Teo" preview (one high-rated +
   // one low-rated draft, picked from the most recent ingested reviews).
   // null on S1+/paid/free. Empty array means S0 but no drafts exist yet.
@@ -27,6 +31,9 @@ type ResenasResponse = {
   // Recently answered reviews. null on S0 and FREE.
   answered: ResenaCard[] | null;
 
+  // Drives the RESPONDIDAS collapsible preview line. Always present.
+  answered_summary: AnsweredSummary;
+
   // Two-line "Modo · …" chip describing the venue's review_response_mode.
   // null on S0 / S1 / FREE (per spec §31.5 the chip only renders S2+).
   mode_chip: ModeChip | null;
@@ -35,6 +42,22 @@ type ResenasResponse = {
     generated_at: string;        // ISO 8601 UTC
     review_count: number;        // total reviews loaded for this venue
   };
+};
+
+type GoogleSummary = {
+  google_rating:       number;          // 0..5, one decimal
+  star_row:            string;          // 5 chars, ★+☆
+  google_review_count: number;          // venues.google_review_count
+  new_this_month:      number;          // count of reviews ≤ 30 days old
+  star_distribution:   Array<{ stars: 1|2|3|4|5; pct: number }>;
+  destacan:            string | null;   // venues.review_summary_destacan
+  quejas:              string | null;   // venues.review_summary_quejas
+};
+
+type AnsweredSummary = {
+  count:      number;          // reviews where owner_responded = true
+  last_date:  string | null;   // ISO 8601 — most recent answered review_date
+  days_since: number | null;   // days from last_date to now
 };
 ```
 
