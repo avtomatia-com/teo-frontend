@@ -1,17 +1,16 @@
-# OS
-.DS_Store
-Thumbs.db
-
-# IDEs
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Claude working memory (kept locally, never published)
-CLAUDE.md
 
 # Build artifacts (none yet, but reserve)
-dist/
+# Claude working memory (kept locally, never published)
+# IDEs
+# OS
+*.swo
+*.swp
+.DS_Store
 .cache/
+.claude/
+.idea/
+.vscode/
+CLAUDE.md
+Thumbs.db
+dist/
 node_modules/

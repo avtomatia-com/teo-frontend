@@ -159,7 +159,6 @@
 
   /* Darker cream sections — subtle paper halftone, smaller dots to stay light */
   .paper-2-dotted,
-  .fp-widget,
   .comp-chip,
   .social-detail-item,
   .cta-item.all-clear,
@@ -973,46 +972,6 @@
   }
   .social-detail-item svg { width: 11px; height: 11px; }
   .social-detail-item strong { color: var(--ink); }
-
-  /* ════════════════════════════════════════════
-     FOREIGN PATRON WIDGET
-     ════════════════════════════════════════════ */
-  .fp-widget {
-    padding: 12px 14px;
-    border: 1px solid var(--line);
-    margin: 8px 0;
-  }
-  .fp-title {
-    font-family: var(--font-display);
-    font-size: 14px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 8px;
-  }
-  .fp-main {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 6px;
-  }
-  .fp-ratio {
-    font-family: var(--font-display);
-    font-size: 30px;
-    line-height: 1;
-  }
-  .fp-vs {
-    font-size: 11px;
-    color: var(--mid);
-    text-align: right;
-    line-height: 1.4;
-  }
-  .fp-vs strong { color: var(--ink); }
-  .fp-langs {
-    font-size: 11px;
-    color: var(--ink-soft);
-    letter-spacing: 0.04em;
-  }
 
   /* ════════════════════════════════════════════
      STATE VISIBILITY
