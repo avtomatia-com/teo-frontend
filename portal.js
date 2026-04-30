@@ -89,6 +89,103 @@
     if (resumen.zone1) renderZone1(resumen.zone1, resumen.venue);
     if (resumen.competitors) renderCompetitors(resumen.competitors);
     if (resumen.action_cta) renderActionCta(resumen.action_cta);
+    renderWeeklyDelta(resumen.weekly_delta);
+  }
+
+  // ── Weekly Delta widget (§31.11) ──────────────────────────────────────────
+  // The mockup ships two widget instances: `.delta-widget.paid` (TEO HIZO ‖
+  // RESULTADOS columns + comparative line) and `.delta-widget.free` (headline
+  // + trend table + insight). CSS toggles which is visible based on
+  // body[data-state]; we populate the matching one from the API payload.
+  // paid_clear reuses the .paid widget shell — only the bottom line changes.
+  function renderWeeklyDelta(delta) {
+    if (!delta) return; // null → keep fixture / hide; CSS already handles per-state visibility
+    const variant = delta.variant;
+    if (variant === 'paid' || variant === 'paid_clear') {
+      renderPaidDelta(delta);
+    } else if (variant === 'free') {
+      renderFreeDelta(delta);
+    }
+  }
+
+  function renderPaidDelta(delta) {
+    const root = document.querySelector('.delta-widget.paid');
+    if (!root) return;
+
+    setText('.delta-date', formatDeltaDate(delta), root);
+
+    // TEO HIZO column — replace the 3 fixture rows with the API's bullet list.
+    const teoList = root.querySelector('.delta-cols .delta-section:first-child .delta-list');
+    if (teoList) {
+      teoList.innerHTML = '';
+      (delta.teo_hizo || []).forEach((row) => {
+        const div = document.createElement('div');
+        div.className = 'delta-row';
+        div.textContent = row.text || '';
+        teoList.appendChild(div);
+      });
+    }
+
+    // RESULTADOS column — span per resultado, signed colour class.
+    const headline = root.querySelector('.delta-headline');
+    if (headline) {
+      headline.innerHTML = '';
+      (delta.resultados || []).forEach((row) => {
+        const span = document.createElement('span');
+        span.className = row.sign || 'neutral';
+        span.textContent = row.text || '';
+        headline.appendChild(span);
+      });
+    }
+
+    // Bottom line: `paid` shows the comparative; `paid_clear` replaces it
+    // with the all-clear ribbon.
+    const comp = root.querySelector('.delta-comp');
+    if (comp) {
+      if (delta.variant === 'paid_clear') {
+        comp.textContent = delta.all_clear_line || '✓ Todo al día';
+      } else {
+        comp.textContent = delta.comparative || '';
+        comp.style.display = delta.comparative ? '' : 'none';
+      }
+    }
+  }
+
+  function renderFreeDelta(delta) {
+    const root = document.querySelector('.delta-widget.free');
+    if (!root) return;
+
+    setText('.delta-date', formatDeltaDate(delta), root);
+
+    // FOMO headline (e.g. "Bar La Paloma sigue ganando terreno")
+    const headline = root.querySelector('.delta-section .delta-headline');
+    if (headline) {
+      headline.innerHTML = '';
+      headline.textContent = delta.headline || '';
+    }
+
+    // 4-row trend table replaces the fixture's 2 narrative rows.
+    const list = root.querySelector('.delta-list');
+    if (list) {
+      list.innerHTML = '';
+      (delta.trend_rows || []).forEach((row) => {
+        const div = document.createElement('div');
+        div.className = 'delta-row';
+        div.textContent =
+          `${row.week_label}    Tú ${formatRating(row.own_rating)}    ` +
+          `${delta.competitor_name || 'Competidor'} ${formatRating(row.competitor_rating)}`;
+        list.appendChild(div);
+      });
+    }
+
+    // Claude insight line at the bottom.
+    setText('.delta-insight-text', delta.insight || '', root);
+  }
+
+  function formatDeltaDate(delta) {
+    const wk = delta.iso_week ? `Sem. ${delta.iso_week}` : '';
+    const m = delta.month_label || '';
+    return [wk, m].filter(Boolean).join(' · ');
   }
 
   function renderVenue(venue) {
