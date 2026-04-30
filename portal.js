@@ -180,6 +180,9 @@
   // We populate just the matching block from the API.
   function renderActionCta(cta) {
     switch (cta.variant) {
+      case 's0_showcase':
+        renderS0Showcase(cta);
+        break;
       case 's0':
       case 's1':
       case 's2':
@@ -195,6 +198,45 @@
         renderPaidPending(cta.tasks || []);
         break;
     }
+  }
+
+  function renderS0Showcase(cta) {
+    const root = document.querySelector('.cta-s0');
+    if (!root) return;
+
+    setText('.cta-intro', cta.intro, root);
+    setText('.cta-footer', cta.footer, root);
+
+    const btn = root.querySelector('.cta-btn');
+    if (btn) {
+      btn.textContent = cta.cta_label || 'Continúa en WhatsApp →';
+      if (cta.cta_href) btn.setAttribute('href', cta.cta_href);
+    }
+
+    const reviewEl = root.querySelector('.cta-review');
+    if (!reviewEl) return;
+    const r = cta.review || {};
+    const isLow = (r.star_rating || 0) <= 3;
+    reviewEl.classList.toggle('low', isLow);
+
+    setText('.review-author', r.reviewer_name || 'Anónimo', reviewEl);
+    setText(
+      '.review-meta',
+      [r.review_date ? formatRelativeDate(r.review_date) : '', 'Google']
+        .filter(Boolean)
+        .join(' · '),
+      reviewEl
+    );
+
+    const stars = reviewEl.querySelector('.review-stars');
+    if (stars) {
+      stars.textContent = r.star_row || '';
+      stars.classList.toggle('low', isLow);
+    }
+
+    setText('.review-text', r.review_text || '', reviewEl);
+    setText('.teo-draft-label', '▸ ' + (cta.draft_label || 'Teo respondería así:'), reviewEl);
+    setText('.teo-draft-text', r.draft_text || '', reviewEl);
   }
 
   function renderSimpleCta(scopeSelector, cta) {

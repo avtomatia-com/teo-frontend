@@ -19,9 +19,10 @@ type ResenasResponse = {
   // destacan/quejas. Always present.
   google_summary: GoogleSummary;
 
-  // S0 only — two-card "Así respondería Teo" preview (one high-rated +
-  // one low-rated draft, picked from the most recent ingested reviews).
-  // null on S1+/paid/free. Empty array means S0 but no drafts exist yet.
+  // S0 only — single-card "Así respondería Teo" preview: the most urgent
+  // unanswered drafted review (lowest stars first, then most recent), to
+  // mirror the Resumen action CTA. null on S1+/paid/free. Empty array
+  // means S0 but no drafts exist yet.
   showcase: ResenaCard[] | null;
 
   // Paid-or-trial view — full unanswered queue with Haiku drafts ready

@@ -510,8 +510,22 @@
       <!-- Action slot (post-Zone 2) — S0/S1 only · CTA fires after owner has seen ranking -->
       <div class="action-slot-post-zone2" style="margin-top: 14px;">
         <div class="cta-item primary cta-s0">
-          <div class="cta-title">Activa la gestión de reseñas</div>
-          <div class="cta-body">Tienes <strong>8 reseñas sin responder</strong>. Conecta tu Google y las contesto por ti esta misma semana.</div>
+          <div class="cta-title cta-intro">Tienes <strong>8 reseñas sin responder</strong> · esta es la más urgente:</div>
+          <div class="cta-review review-row low">
+            <div class="review-head">
+              <div class="review-left">
+                <div class="review-author">María</div>
+                <div class="review-meta">Hace 3 días · Google</div>
+              </div>
+              <div class="review-stars low">★★☆☆☆</div>
+            </div>
+            <div class="review-text">El servicio fue muy lento, esperamos casi una hora por la comida.</div>
+            <div class="teo-draft">
+              <div class="teo-draft-label">▸ Teo respondería así:</div>
+              <div class="teo-draft-text">Sentimos mucho la espera, María. Esa noche tuvimos un imprevisto en cocina; nos encantaría invitarte a una tapa la próxima vez. Gracias por el comentario.</div>
+            </div>
+          </div>
+          <div class="cta-body cta-footer">Si quieres cambiar algo o que Teo publique esta respuesta:</div>
           <a href="#" class="cta-btn">Continúa en WhatsApp →</a>
         </div>
         <div class="cta-item primary cta-s1">
@@ -544,8 +558,10 @@
       <!-- ═══════════ PAGE: RESEÑAS ═══════════ -->
       <div class="page page-reviews">
 
-        <!-- Google review summary header — same for all states -->
-        <div class="collapsible" data-expanded="false">
+        <!-- Google review summary header — same for all states.
+             Default-open on S0 since the showcase shows just the one review,
+             so the GOOGLE block becomes the primary content of the tab. -->
+        <div class="collapsible" data-expanded="false" data-default-expand-states="s0">
           <div class="collapsible-trigger">
             <div class="ascii-label">GOOGLE</div>
             <div class="collapsible-preview">4.2★ · 187 reseñas · 18 nuevas este mes <span class="preview-arrow">abrir ↓</span></div>
@@ -605,26 +621,7 @@
         <div class="rev-showcase">
           <div class="ascii-label">ASÍ RESPONDERÍA TEO</div>
 
-          <div class="review-row">
-            <div class="review-head">
-              <div class="review-left">
-                <div class="review-author">María G.</div>
-                <div class="review-meta">Hace 3 días · Google</div>
-              </div>
-              <div class="review-stars">★★★★★</div>
-            </div>
-            <div class="review-text">
-              Volvimos después de dos años y seguís igual de bien. La tortilla sigue siendo de las mejores de Madrid, y el camarero nos recordaba de la última vez. Cuatro estrellas y media redondeo a cinco por eso.
-            </div>
-            <div class="teo-draft">
-              <div class="teo-draft-label">▸ Teo respondería</div>
-              <div class="teo-draft-text">
-                "María, muchísimas gracias por volver — nos hace especial ilusión cuando repetís. Un saludo de parte de todo el equipo, y la tortilla os espera siempre."
-              </div>
-            </div>
-          </div>
-
-          <div class="review-row">
+          <div class="review-row low">
             <div class="review-head">
               <div class="review-left">
                 <div class="review-author">Roberto L.</div>
@@ -636,7 +633,7 @@
               Llegamos a las 14:30 sin reserva y nos dijeron 40 minutos de espera. Esperamos 55. Cuando por fin nos sentamos, la comida bien pero el servicio bastante frío. No sé si volveremos.
             </div>
             <div class="teo-draft">
-              <div class="teo-draft-label">▸ Teo respondería</div>
+              <div class="teo-draft-label">▸ Teo respondería así:</div>
               <div class="teo-draft-text">
                 "Roberto, lamentamos mucho que la espera se alargara más de lo previsto y que notaras el servicio menos atento — los sábados al mediodía tenemos más demanda de la que podemos atender sin reserva. Nos encantaría darte otra oportunidad; si nos escribes por WhatsApp te guardamos mesa."
               </div>
@@ -644,8 +641,7 @@
           </div>
 
           <div class="cta-item primary" style="margin-top: 16px;">
-            <div class="cta-title">Si quieres editar estas respuestas o publicarlas</div>
-            <div class="cta-body">Sigamos la configuración en WhatsApp — así me das acceso a Google y las publico por ti.</div>
+            <div class="cta-title">Si quieres cambiar algo o que Teo publique esta respuesta:</div>
             <a href="#" class="cta-btn">Continúa en WhatsApp →</a>
           </div>
         </div>

@@ -274,6 +274,27 @@ A single CTA block whose copy depends on `state`. Discriminated union — front-
 
 ```ts
 type ActionCta =
+  | {
+      // S0 with at least one drafted unanswered review — show, don't tell:
+      // surface the most urgent review + Teo's draft + a WhatsApp CTA so the
+      // owner has a concrete reason to give us Google access. Falls back to
+      // the plain `s0` variant when nothing has been drafted yet.
+      variant: "s0_showcase";
+      intro: string;        // e.g. "Tienes 8 reseñas sin responder · esta es la más urgente:"
+      review: {
+        id: string;
+        reviewer_name: string;
+        star_rating: number;
+        star_row: string;
+        review_text: string;
+        review_date: string;  // ISO
+        draft_text: string;
+      };
+      draft_label: string;  // "Teo respondería así:"
+      footer: string;       // "Si quieres cambiar algo o que Teo publique esta respuesta:"
+      cta_label: string;    // "Continúa en WhatsApp →"
+      cta_href: string;     // wa.me deep-link tagged with the review id
+    }
   | { variant: "s0"; title: string; body: string; cta_label: string; cta_href: string }
   | { variant: "s1"; title: string; body: string; cta_label: string; cta_href: string }
   | { variant: "s2"; title: string; body: string; cta_label: string; cta_href: string }
