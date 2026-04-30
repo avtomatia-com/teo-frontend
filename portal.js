@@ -305,12 +305,13 @@
       trendHtml = `<span class="comp-trend ${cls}">${arrow} ${escapeHtml(formatTrendDelta(row.trend.delta))}</span>`;
     }
 
-    const expandBtnHtml = !isSelf ? '<button class="comp-expand-btn">▾</button>' : '';
-    const onclickAttr = !isSelf
+    const hasDetail = !!row.detail;
+    const expandBtnHtml = hasDetail ? '<button class="comp-expand-btn">▾</button>' : '';
+    const onclickAttr = hasDetail
       ? ' onclick="this.classList.toggle(\'open\')"'
       : '';
     const rowClass = isSelf ? 'comp-row is-self' : 'comp-row';
-    const detailHtml = !isSelf && row.detail ? buildCompDetailHtml(row.detail) : '';
+    const detailHtml = hasDetail ? buildCompDetailHtml(row.detail) : '';
 
     return (
       `<div class="${rowClass}"${onclickAttr}>` +
@@ -334,13 +335,14 @@
   function buildCompDetailHtml(detail) {
     const g = detail.google || {};
 
-    let summaryHtml = '';
-    if (g.destacan || g.quejas) {
-      const parts = [];
-      if (g.destacan) parts.push(`<strong>Destacan:</strong> ${escapeHtml(g.destacan)}.`);
-      if (g.quejas) parts.push(`<strong>Quejas:</strong> ${escapeHtml(g.quejas)}.`);
-      summaryHtml = `<div class="g-summary">${parts.join(' ')}</div>`;
-    }
+    const summaryParts = [];
+    if (g.destacan)
+      summaryParts.push(`<strong>Destacan:</strong> ${escapeHtml(g.destacan)}.`);
+    if (g.quejas)
+      summaryParts.push(`<strong>Quejas:</strong> ${escapeHtml(g.quejas)}.`);
+    const summaryHtml = summaryParts.length
+      ? `<div class="g-summary">${summaryParts.join(' ')}</div>`
+      : '<div class="g-summary g-summary-empty">Resumen en preparación.</div>';
 
     let distHtml = '';
     if (g.star_distribution && g.star_distribution.length > 0) {
@@ -362,10 +364,7 @@
       distHtml = `<div class="g-dist">${rows}</div>`;
     }
 
-    const googleInner =
-      summaryHtml || distHtml
-        ? `<div class="google-detail">${summaryHtml}${distHtml}</div>`
-        : '';
+    const googleInner = `<div class="google-detail">${summaryHtml}${distHtml}</div>`;
     const reviewCountStr =
       g.review_count != null ? formatInt(g.review_count) + ' reseñas' : '';
     const googleBlock =

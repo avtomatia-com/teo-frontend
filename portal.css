@@ -749,7 +749,6 @@
     padding: 10px 8px 8px;
     margin-left: -8px;
     margin-right: -8px;
-    cursor: default;
   }
   .comp-row.is-self + .comp-row { border-top: none; }
   .comp-row .comp-rank {
@@ -778,7 +777,6 @@
     color: var(--ink);
     font-weight: 500;
   }
-  .comp-row.is-self .comp-expand-btn { display: none; }
 
   .comp-main {
     display: grid;
@@ -908,6 +906,7 @@
     color: var(--ink-soft);
   }
   .g-summary strong { color: var(--ink); }
+  .g-summary-empty { color: var(--mid); font-style: italic; }
 
   .g-dist {
     display: flex;
