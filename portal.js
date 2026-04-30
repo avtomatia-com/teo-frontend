@@ -115,7 +115,12 @@
     setText('.delta-date', formatDeltaDate(delta), root);
 
     // TEO HIZO column — replace the 3 fixture rows with the API's bullet list.
-    const teoList = root.querySelector('.delta-cols .delta-section:first-child .delta-list');
+    // When the API returns no rows (zero-count weeks are filtered server-side
+    // to avoid churn-inducing "Respondió 0 reseñas" theater), collapse the
+    // entire column including its label so RESULTADOS doesn't sit next to a
+    // hollow heading.
+    const teoSection = root.querySelector('.delta-cols .delta-section:first-child');
+    const teoList = teoSection?.querySelector('.delta-list');
     if (teoList) {
       teoList.innerHTML = '';
       (delta.teo_hizo || []).forEach((row) => {
@@ -124,6 +129,12 @@
         div.textContent = row.text || '';
         teoList.appendChild(div);
       });
+    }
+    if (teoSection) {
+      const hasRows = Array.isArray(delta.teo_hizo) && delta.teo_hizo.length > 0;
+      teoSection.style.display = hasRows ? '' : 'none';
+      const divider = root.querySelector('.delta-divider');
+      if (divider) divider.style.display = hasRows ? '' : 'none';
     }
 
     // RESULTADOS column — span per resultado, signed colour class.
