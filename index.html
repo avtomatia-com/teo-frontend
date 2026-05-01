@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Teo — Portal homepage mockup</title>
-<link rel="stylesheet" href="portal.css?v=3">
+<link rel="stylesheet" href="portal.css?v=4">
 </head>
 <body data-state="s0" data-page="resumen">
 
@@ -767,13 +767,19 @@
           <div class="ascii-label">NECESITAN TU CONTEXTO</div>
         </div>
 
-        <!-- ══════ APROBAR MODO SEMI-AUTOMÁTICO — S1 only ══════ -->
-        <!-- Hidden when API returns auto_publish_section: null. -->
+        <!-- ══════ TEO PUBLICARÁ ESTAS — auto-publish list (S1) ══════ -->
+        <!-- The list of drafts Teo will auto-post once the owner approves
+             semi-auto. Read-only cards (no per-row CTA). Sits above the
+             APROBAR section so the owner sees what they're approving. -->
         <div class="rev-auto-publish" style="display:none">
-          <div class="ascii-label rev-auto-title">MODO SEMI-AUTOMÁTICO</div>
-          <div class="rev-auto-body"></div>
-          <div class="rev-auto-actions">
-            <a href="#" class="cta-btn rev-auto-cta">APROBAR MODO SEMI-AUTOMÁTICO</a>
+          <div class="ascii-label">TEO RESPONDERÁ ESTAS POR TI</div>
+          <div class="rev-auto-list"></div>
+          <div class="rev-auto-cta-block">
+            <div class="ascii-label rev-auto-title">MODO SEMI-AUTOMÁTICO</div>
+            <div class="rev-auto-body"></div>
+            <div class="rev-auto-actions">
+              <a href="#" class="cta-btn rev-auto-cta">APROBAR MODO SEMI-AUTOMÁTICO</a>
+            </div>
           </div>
         </div>
 
@@ -1879,6 +1885,6 @@
   </div>
 </div>
 
-<script src="portal.js?v=3" defer></script>
+<script src="portal.js?v=4" defer></script>
 </body>
 </html>

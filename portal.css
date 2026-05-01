@@ -1460,14 +1460,18 @@
      REVIEWS — visibility per state
      ════════════════════════════════════════════ */
   .mode-chip, .filter-row, .rev-answered, .rev-unanswered, .rev-showcase,
-  .rev-needs-context, .rev-auto-publish,
   .rev-queued, .rev-fomo-top, .reviews-all-clear { display: none; }
+  /* .rev-needs-context and .rev-auto-publish are JS-driven (hidden inline
+     when the API returns null). Keeping them out of the blanket rule lets
+     `style.display = ''` reveal them at any state. */
 
   /* ────────────────────────────────────────────────────────────
      Necesitan tu contexto + Aprobar modo semi-automático
      (S1 → S2 transition surface — Mode B handsfree promise)
      ──────────────────────────────────────────────────────────── */
-  .rev-auto-publish {
+  .rev-auto-publish { margin-top: var(--gap); }
+  .rev-auto-list { margin-top: 4px; }
+  .rev-auto-cta-block {
     margin-top: var(--gap);
     padding: 14px;
     border: 1.25px solid var(--line);
@@ -2546,15 +2550,20 @@
      ════════════════════════════════════════════ */
   .cal-s0, .cal-s1, .cal-s2, .cal-s3, .cal-s4, .cal-paid, .cal-free { display: none; }
 
-  /* S0: next-to-unlock preview only (paper hero) */
+  /* Calendar reveals one stage at a time. Daniel's redesign: the first
+     social post is the Meta-OAuth hook at S2 (NOT S1), and the full
+     month proposal lands at S3. Earlier states show the locked hero so
+     the tab isn't a dead surface. */
+  /* S0: locked / next-to-unlock preview */
   body[data-state="s0"][data-page="calendar"] .cal-s0 { display: block; }
-  /* S1: single post preview */
-  body[data-state="s1"][data-page="calendar"] .cal-s1 { display: block; }
-  /* S2: month view with 2 posts/week proposal */
-  body[data-state="s2"][data-page="calendar"] .cal-s2 { display: block; }
-  /* S3–S4: full month view, locked + suggested mix */
-  body[data-state="s3"][data-page="calendar"] .cal-s3 { display: block; }
-  body[data-state="s4"][data-page="calendar"] .cal-s4 { display: block; }
+  /* S1: still locked — owner is busy approving the review-mode here */
+  body[data-state="s1"][data-page="calendar"] .cal-s0 { display: block; }
+  /* S2: single post preview — the first social post draft, hook for Meta OAuth */
+  body[data-state="s2"][data-page="calendar"] .cal-s1 { display: block; }
+  /* S3: month view with 2 posts/week proposal — owner approves the calendar */
+  body[data-state="s3"][data-page="calendar"] .cal-s2 { display: block; }
+  /* S4: full month view, locked + suggested mix */
+  body[data-state="s4"][data-page="calendar"] .cal-s3 { display: block; }
   /* PAID: full month view (live) */
   body[data-state="paid"][data-page="calendar"] .cal-paid { display: block; }
   body[data-state="paid-clear"][data-page="calendar"] .cal-paid { display: block; }

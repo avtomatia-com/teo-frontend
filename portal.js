@@ -99,11 +99,24 @@
   // body[data-state]; we populate the matching one from the API payload.
   // paid_clear reuses the .paid widget shell — only the bottom line changes.
   function renderWeeklyDelta(delta) {
-    if (!delta) return; // null → keep fixture / hide; CSS already handles per-state visibility
+    // No delta → hide both widget shells. Without this, S2/S3 CSS leaves
+    // the fixture markup visible and the owner sees stale demo data on a
+    // venue that hasn't accumulated a single weekly snapshot yet.
+    const paidEl = document.querySelector('.delta-widget.paid');
+    const freeEl = document.querySelector('.delta-widget.free');
+    if (!delta) {
+      if (paidEl) paidEl.style.display = 'none';
+      if (freeEl) freeEl.style.display = 'none';
+      return;
+    }
     const variant = delta.variant;
     if (variant === 'paid' || variant === 'paid_clear') {
+      if (paidEl) paidEl.style.display = '';
+      if (freeEl) freeEl.style.display = 'none';
       renderPaidDelta(delta);
     } else if (variant === 'free') {
+      if (freeEl) freeEl.style.display = '';
+      if (paidEl) paidEl.style.display = 'none';
       renderFreeDelta(delta);
     }
   }
@@ -644,15 +657,28 @@
     }
 
     // ── Aprobar modo semi-automático (S1 only) ───────────────────────────
+    // Owner needs to see what Teo will publish before approving — we render
+    // the auto-publish-eligible drafts as read-only review-row cards above
+    // the explanation copy + button.
     const autoPublish = document.querySelector('.rev-auto-publish');
     if (autoPublish) {
       const sec = data.auto_publish_section;
+      const list = autoPublish.querySelector('.rev-auto-list');
+      if (list) list.querySelectorAll('.review-row').forEach((r) => r.remove());
       if (!sec) {
         autoPublish.style.display = 'none';
       } else {
         autoPublish.style.display = '';
         setText('.rev-auto-title', sec.title || 'MODO SEMI-AUTOMÁTICO', autoPublish);
         setText('.rev-auto-body', sec.body || '', autoPublish);
+        if (list) {
+          (sec.reviews || []).forEach((card) => {
+            list.insertAdjacentHTML(
+              'beforeend',
+              buildReviewRowHtml(card, { withAction: false })
+            );
+          });
+        }
         const cta = autoPublish.querySelector('.rev-auto-cta');
         if (cta) {
           if (sec.cta_label) cta.textContent = sec.cta_label;

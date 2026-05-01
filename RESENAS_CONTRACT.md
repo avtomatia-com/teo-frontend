@@ -100,8 +100,9 @@ type ResenaCard = {
   // - "low"           → S0 showcase recovery card
   // - "pending"       → manual_approve queue, "Revisar →" CTA visible
   // - "needs_context" → Mode B context-needed card, "Revisar →" CTA visible
+  // - "auto_publish"  → S1 auto-publish-eligible card, read-only (no CTA)
   // - "answered"      → paid history, no CTA
-  kind: "high" | "low" | "pending" | "needs_context" | "answered";
+  kind: "high" | "low" | "pending" | "needs_context" | "auto_publish" | "answered";
 
   // Deep-link for the per-row CTA — set when kind is "pending" or
   // "needs_context". Frontend should hide the CTA for other kinds. Base
@@ -117,11 +118,13 @@ type ResenaCard = {
 
 ```ts
 type AutoPublishSection = {
-  count:     number;   // # of unanswered reviews eligible for auto-publish
-  title:     string;   // "MODO SEMI-AUTOMÁTICO"
-  body:      string;   // explanatory paragraph about semi-auto behaviour
-  cta_label: string;   // "APROBAR MODO SEMI-AUTOMÁTICO"
-  cta_href:  string;   // deep-link that pre-loads the chat trigger phrase
+  count:     number;          // # of unanswered reviews eligible for auto-publish
+  reviews:   ResenaCard[];    // the actual cards Teo would auto-post (kind="auto_publish",
+                              // capped at 25). Owner inspects these BEFORE approving.
+  title:     string;          // "MODO SEMI-AUTOMÁTICO"
+  body:      string;          // explanatory paragraph about semi-auto behaviour
+  cta_label: string;          // "APROBAR MODO SEMI-AUTOMÁTICO"
+  cta_href:  string;          // deep-link that pre-loads the chat trigger phrase
 };
 ```
 
