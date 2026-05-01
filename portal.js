@@ -31,9 +31,53 @@
       const newUrl = location.pathname + (qs ? '?' + qs : '') + location.hash;
       history.replaceState(null, '', newUrl);
     }
-    fetchResumen(slug, token).then(() => fetchResenas(slug, token));
+    fetchResumen(slug, token)
+      .then(() => fetchResenas(slug, token))
+      .then(() => schedulePostLoadPolls(slug, token));
   } else {
     initUi();
+  }
+
+  // Background portal-prep (competitor enrichment) keeps writing to the DB
+  // for ~30s after the magic link ships. Without polling, owners who land
+  // on the portal in those first seconds see empty competitor cells until
+  // they manually refresh. Run 4 silent re-fetches at 15s/30s/45s/60s
+  // post-load, then stop — by then the background work is done. Renderers
+  // are idempotent (clear .review-row and rebuild from API), so re-calling
+  // them just diffs new data in.
+  function schedulePostLoadPolls(slug, token) {
+    [15000, 30000, 45000, 60000].forEach((delay) => {
+      setTimeout(() => {
+        // Silent: errors during polling don't show an error UI; the user
+        // already has the first render. Best-effort.
+        Promise.allSettled([
+          silentRefetchResumen(slug, token),
+          silentRefetchResenas(slug, token),
+        ]);
+      }, delay);
+    });
+  }
+
+  async function silentRefetchResumen(slug, token) {
+    let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resumen`;
+    if (token) url += `?t=${encodeURIComponent(token)}`;
+    try {
+      const resp = await fetch(url, { credentials: 'include' });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      applyResumen(data);
+    } catch (_err) { /* swallow */ }
+  }
+
+  async function silentRefetchResenas(slug, token) {
+    let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resenas`;
+    if (token) url += `?t=${encodeURIComponent(token)}`;
+    try {
+      const resp = await fetch(url, { credentials: 'include' });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      renderResenas(data);
+    } catch (_err) { /* swallow */ }
   }
 
   // ───────────────────────────────────────────────────────────────────────────
