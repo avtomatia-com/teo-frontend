@@ -46,6 +46,13 @@
     align-items: center;
   }
 
+  /* Lab header (state-switcher, fixture toggles) is the demo lab UI only.
+     Hidden in production by default — JS opts in by adding `demo-mode` if
+     the page loads with no magic-link slug. Without this default, owners
+     who land on the portal before applyResumen runs (or whose API call
+     errors silently) see the demo toggles overlaid on fixture data. */
+  .lab-header { display: none; }
+  .lab-header.demo-mode { display: block; }
   .lab-header {
     width: 100%;
     flex-shrink: 0;

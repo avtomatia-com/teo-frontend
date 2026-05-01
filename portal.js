@@ -35,6 +35,13 @@
       .then(() => fetchResenas(slug, token))
       .then(() => schedulePostLoadPolls(slug, token));
   } else {
+    // No magic-link slug → demo mode. Reveal the lab header so designers
+    // can flip between fixture states. Real owners arriving without a
+    // valid slug get the bare fixture without the toggle UI.
+    const lab = document.querySelector('.lab-header');
+    if (lab && (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || params.has('demo'))) {
+      lab.classList.add('demo-mode');
+    }
     initUi();
   }
 
