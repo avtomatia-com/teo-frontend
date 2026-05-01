@@ -89,7 +89,26 @@
     if (resumen.zone1) renderZone1(resumen.zone1, resumen.venue);
     if (resumen.competitors) renderCompetitors(resumen.competitors);
     if (resumen.action_cta) renderActionCta(resumen.action_cta);
+    if (resumen.settings) renderSettings(resumen.settings);
     renderWeeklyDelta(resumen.weekly_delta);
+  }
+
+  // ── Settings page · Comunicaciones ────────────────────────────────────────
+  // MVP: only the weekly-report-delivery row. Backend ships
+  // resumen.settings.comunicaciones.weekly_report; render it into the
+  // .comm-report-row anchor. The CTA href routes the owner into chat
+  // with the trigger phrase pre-loaded so conversation._maybe_handle_
+  // report_schedule fires the 2-turn flow.
+  function renderSettings(settings) {
+    const row = document.querySelector('.comm-report-row');
+    if (!row) return;
+    const wr = settings && settings.comunicaciones && settings.comunicaciones.weekly_report;
+    if (!wr) return;
+    const valEl = row.querySelector('.comm-report-value');
+    if (valEl && wr.value) valEl.textContent = wr.value;
+    if (wr.cta_href) row.setAttribute('href', wr.cta_href);
+    const preview = document.querySelector('.comm-report-preview');
+    if (preview && wr.value) preview.textContent = wr.value;
   }
 
   // ── Weekly Delta widget (§31.11) ──────────────────────────────────────────

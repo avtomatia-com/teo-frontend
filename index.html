@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Teo — Portal homepage mockup</title>
-<link rel="stylesheet" href="portal.css?v=5">
+<link rel="stylesheet" href="portal.css?v=6">
 </head>
 <body data-state="s0" data-page="resumen">
 
@@ -1704,6 +1704,25 @@
           </div>
         </div>
 
+        <!-- Comunicaciones — MVP scope: ONLY weekly report delivery slot.
+             Other rows (notification preferences, channel choice) are
+             post-MVP. Populated by portal.js from /resumen `settings`. -->
+        <div class="collapsible settings-group settings-comunicaciones" data-expanded="false">
+          <div class="collapsible-trigger">
+            <div class="settings-group-title">Comunicaciones</div>
+            <div class="collapsible-preview"><span class="comm-report-preview">Informe semanal</span> <span class="preview-arrow">abrir ↓</span></div>
+          </div>
+          <div class="collapsible-body">
+            <a class="setting-row tappable comm-report-row" href="#" data-pre-load>
+              <div class="setting-left">
+                <div class="setting-label">Entrega del informe semanal</div>
+                <div class="setting-value comm-report-value">—</div>
+              </div>
+              <div class="setting-right"><span class="setting-arrow">Cambiar →</span></div>
+            </a>
+          </div>
+        </div>
+
         <!-- Plan y facturación — only after conversion (paid / paid_clear) -->
         <div class="collapsible settings-group settings-paid-only" data-expanded="false">
           <div class="collapsible-trigger">
@@ -1885,6 +1904,6 @@
   </div>
 </div>
 
-<script src="portal.js?v=5" defer></script>
+<script src="portal.js?v=6" defer></script>
 </body>
 </html>
