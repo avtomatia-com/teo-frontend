@@ -761,7 +761,23 @@
           </div>
         </div>
 
-        <!-- ══════ UNANSWERED — S1+, PAID, and FREE (below urgent) ══════ -->
+        <!-- ══════ NECESITAN TU CONTEXTO — Mode B / S1+ ══════ -->
+        <!-- Hidden when API returns needs_context: null. -->
+        <div class="rev-needs-context" style="display:none">
+          <div class="ascii-label">NECESITAN TU CONTEXTO</div>
+        </div>
+
+        <!-- ══════ APROBAR MODO SEMI-AUTOMÁTICO — S1 only ══════ -->
+        <!-- Hidden when API returns auto_publish_section: null. -->
+        <div class="rev-auto-publish" style="display:none">
+          <div class="ascii-label rev-auto-title">MODO SEMI-AUTOMÁTICO</div>
+          <div class="rev-auto-body"></div>
+          <div class="rev-auto-actions">
+            <a href="#" class="cta-btn rev-auto-cta">APROBAR MODO SEMI-AUTOMÁTICO</a>
+          </div>
+        </div>
+
+        <!-- ══════ UNANSWERED — Mode A (manual_approve) only ══════ -->
         <div class="rev-unanswered">
           <div class="ascii-label">SIN RESPONDER</div>
 

@@ -1460,7 +1460,36 @@
      REVIEWS — visibility per state
      ════════════════════════════════════════════ */
   .mode-chip, .filter-row, .rev-answered, .rev-unanswered, .rev-showcase,
+  .rev-needs-context, .rev-auto-publish,
   .rev-queued, .rev-fomo-top, .reviews-all-clear { display: none; }
+
+  /* ────────────────────────────────────────────────────────────
+     Necesitan tu contexto + Aprobar modo semi-automático
+     (S1 → S2 transition surface — Mode B handsfree promise)
+     ──────────────────────────────────────────────────────────── */
+  .rev-auto-publish {
+    margin-top: var(--gap);
+    padding: 14px;
+    border: 1.25px solid var(--line);
+    background: var(--paper-2, #f4ede0);
+  }
+  .rev-auto-body {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+  .rev-auto-actions { margin-top: 12px; }
+  .rev-auto-cta {
+    display: inline-block;
+    padding: 10px 14px;
+    background: var(--green, #2f6f3a);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+  }
+  .rev-auto-cta:hover { opacity: 0.92; }
 
   /* S0 — showcase only */
   body[data-state="s0"][data-page="reviews"] .rev-showcase { display: block; }

@@ -624,19 +624,60 @@
       });
     }
 
+    // ── Necesitan tu contexto (Mode B) ────────────────────────────────────
+    // Backend returns null when there's nothing to surface — keep hidden.
+    const needsCtx = document.querySelector('.rev-needs-context');
+    if (needsCtx) {
+      needsCtx.querySelectorAll('.review-row').forEach((r) => r.remove());
+      const items = data.needs_context || [];
+      if (items.length === 0) {
+        needsCtx.style.display = 'none';
+      } else {
+        needsCtx.style.display = '';
+        items.forEach((card) => {
+          needsCtx.insertAdjacentHTML(
+            'beforeend',
+            buildReviewRowHtml(card, { withAction: true })
+          );
+        });
+      }
+    }
+
+    // ── Aprobar modo semi-automático (S1 only) ───────────────────────────
+    const autoPublish = document.querySelector('.rev-auto-publish');
+    if (autoPublish) {
+      const sec = data.auto_publish_section;
+      if (!sec) {
+        autoPublish.style.display = 'none';
+      } else {
+        autoPublish.style.display = '';
+        setText('.rev-auto-title', sec.title || 'MODO SEMI-AUTOMÁTICO', autoPublish);
+        setText('.rev-auto-body', sec.body || '', autoPublish);
+        const cta = autoPublish.querySelector('.rev-auto-cta');
+        if (cta) {
+          if (sec.cta_label) cta.textContent = sec.cta_label;
+          if (sec.cta_href) cta.setAttribute('href', sec.cta_href);
+        }
+      }
+    }
+
+    // ── Sin responder (Mode A — manual approve) ──────────────────────────
+    // Backend returns null in context_aware mode; only manual_approve gets
+    // the per-row pending list with Aprobar CTAs.
     const unanswered = document.querySelector('.rev-unanswered');
     if (unanswered) {
       unanswered.querySelectorAll('.review-row').forEach((r) => r.remove());
-      (data.pending || []).forEach((card) => {
-        unanswered.insertAdjacentHTML(
-          'beforeend',
-          buildReviewRowHtml(card, { withAction: true })
-        );
-      });
-      // Hide the whole block if there's nothing pending — keeps the "Todo
-      // al día" badge visible on its own (paid_clear).
-      if ((data.pending || []).length === 0) {
+      const pending = data.pending || [];
+      if (pending.length === 0) {
         unanswered.style.display = 'none';
+      } else {
+        unanswered.style.display = '';
+        pending.forEach((card) => {
+          unanswered.insertAdjacentHTML(
+            'beforeend',
+            buildReviewRowHtml(card, { withAction: true })
+          );
+        });
       }
     }
 
