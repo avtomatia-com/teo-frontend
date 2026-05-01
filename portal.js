@@ -998,6 +998,24 @@
       collapsible.setAttribute('data-expanded', isOpen ? 'false' : 'true');
     });
 
+    // In-portal tab navigation — intercept anchor clicks where href is a
+    // hash matching a known page name. Backend uses these as a sentinel to
+    // route CTAs into another tab (e.g. S2 Resumen → "VER EL POST
+    // PROPUESTO →" jumps to the Calendario tab).
+    const PAGE_HASHES = new Set(['#resumen', '#reviews', '#calendar', '#chatbot', '#faq', '#settings']);
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      const href = a.getAttribute('href');
+      if (!href || !PAGE_HASHES.has(href)) return;
+      e.preventDefault();
+      const target = href.slice(1);
+      body.setAttribute('data-page', target);
+      resetCollapsibles();
+      const sb = document.querySelector('.scroll-body');
+      if (sb) sb.scrollTop = 0;
+    });
+
     injectCreateButtons();
   }
 

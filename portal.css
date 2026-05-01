@@ -595,9 +595,14 @@
   .cta-item.all-clear .cta-title { color: var(--ink); }
   .cta-item.all-clear .cta-body { color: var(--ink-soft); margin-bottom: 0; }
 
-  /* Compact variant: single horizontal line, check on left of title, no body */
-  .cta-item.all-clear.compact {
+  /* Compact variant: single horizontal line, check on left of title, no body.
+     `display: flex` is gated on the paid-clear state because the
+     three-class selector outranks the blanket `display:none` rule below
+     for .cta-paid-clear, and without the gate the ribbon leaks into S2/S3. */
+  body[data-state="paid-clear"] .cta-item.all-clear.compact {
     display: flex;
+  }
+  .cta-item.all-clear.compact {
     flex-direction: row;
     align-items: center;
     gap: 10px;
