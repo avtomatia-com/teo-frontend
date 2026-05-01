@@ -93,13 +93,16 @@
   async function fetchResumen(slug, token) {
     let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resumen`;
     if (token) url += `?t=${encodeURIComponent(token)}`;
+    console.log('[teo] fetchResumen:', url);
     let resp;
     try {
       resp = await fetch(url, { credentials: 'include' });
-    } catch (_err) {
+    } catch (err) {
+      console.error('[teo] fetchResumen network error:', err);
       return showError('No se pudo conectar con el servidor.');
     }
 
+    console.log('[teo] fetchResumen response:', resp.status);
     if (resp.status === 404) return showError('Local no encontrado.');
     if (resp.status === 401)
       return showError(
@@ -112,7 +115,8 @@
     let resumen;
     try {
       resumen = await resp.json();
-    } catch (_err) {
+    } catch (err) {
+      console.error('[teo] fetchResumen JSON parse error:', err);
       return showError('Respuesta inválida del servidor.');
     }
 
@@ -129,19 +133,39 @@
   //  competitors, action_cta, etc. — for now those keep their fixture content.
   // ───────────────────────────────────────────────────────────────────────────
   function applyResumen(resumen) {
-    if (!resumen) return;
+    if (!resumen) {
+      console.warn('[teo] applyResumen: empty resumen, skipping');
+      return;
+    }
+
+    console.log(
+      '[teo] applyResumen: state=%s venue=%s zone1=%s',
+      resumen.state, resumen.venue && resumen.venue.name, !!resumen.zone1,
+    );
 
     if (resumen.state) document.body.dataset.state = resumen.state;
 
     const labHeader = document.querySelector('.lab-header');
-    if (labHeader) labHeader.style.display = 'none';
+    if (labHeader) {
+      labHeader.style.display = 'none';
+      labHeader.classList.remove('demo-mode');
+    }
 
-    if (resumen.venue) renderVenue(resumen.venue);
-    if (resumen.zone1) renderZone1(resumen.zone1, resumen.venue);
-    if (resumen.competitors) renderCompetitors(resumen.competitors);
-    if (resumen.action_cta) renderActionCta(resumen.action_cta);
-    if (resumen.settings) renderSettings(resumen.settings);
-    renderWeeklyDelta(resumen.weekly_delta);
+    // Wrap each renderer in try/catch so one failing block doesn't leave
+    // the rest of the page on fixture data. Bug Daniel hit on iter 4: a
+    // silent throw mid-applyResumen left the demo "TABERNA DEL ÁNGEL"
+    // venue name visible.
+    const _safe = (label, fn) => {
+      try { fn(); }
+      catch (err) { console.error('[teo] applyResumen.' + label + ':', err); }
+    };
+
+    if (resumen.venue) _safe('venue',         () => renderVenue(resumen.venue));
+    if (resumen.zone1) _safe('zone1',         () => renderZone1(resumen.zone1, resumen.venue));
+    if (resumen.competitors) _safe('competitors', () => renderCompetitors(resumen.competitors));
+    if (resumen.action_cta)  _safe('action_cta',  () => renderActionCta(resumen.action_cta));
+    if (resumen.settings)    _safe('settings',    () => renderSettings(resumen.settings));
+    _safe('weekly_delta', () => renderWeeklyDelta(resumen.weekly_delta));
   }
 
   // ── Settings page · Comunicaciones ────────────────────────────────────────
