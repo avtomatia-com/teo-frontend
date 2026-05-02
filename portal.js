@@ -33,7 +33,7 @@
     }
     fetchResumen(slug, token)
       .then(() => fetchResenas(slug, token))
-      .then(() => schedulePostLoadPolls(slug, token));
+      .then(() => schedulePostLoadPolls(slug));
   } else {
     // No magic-link slug → demo mode. Reveal the lab header so designers
     // can flip between fixture states. Real owners arriving without a
@@ -52,35 +52,44 @@
   // post-load, then stop — by then the background work is done. Renderers
   // are idempotent (clear .review-row and rebuild from API), so re-calling
   // them just diffs new data in.
-  function schedulePostLoadPolls(slug, token) {
+  // `pollsAlive` flips to false when ANY poll comes back 401 — owner has
+  // rotated the magic link from chat (the new token invalidated this one).
+  // Without the flag, every subsequent poll retries with the dead token
+  // and the user eventually sees a misleading "Tu enlace ha caducado"
+  // even though they already have a working new link in their chat.
+  let pollsAlive = true;
+
+  function schedulePostLoadPolls(slug) {
     [15000, 30000, 45000, 60000].forEach((delay) => {
       setTimeout(() => {
+        if (!pollsAlive) return;
         // Silent: errors during polling don't show an error UI; the user
-        // already has the first render. Best-effort.
+        // already has the first render. Cookie auth — no token in URL,
+        // so token rotation in chat doesn't break already-loaded pages.
         Promise.allSettled([
-          silentRefetchResumen(slug, token),
-          silentRefetchResenas(slug, token),
+          silentRefetchResumen(slug),
+          silentRefetchResenas(slug),
         ]);
       }, delay);
     });
   }
 
-  async function silentRefetchResumen(slug, token) {
-    let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resumen`;
-    if (token) url += `?t=${encodeURIComponent(token)}`;
+  async function silentRefetchResumen(slug) {
+    const url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resumen`;
     try {
       const resp = await fetch(url, { credentials: 'include' });
+      if (resp.status === 401) { pollsAlive = false; return; }
       if (!resp.ok) return;
       const data = await resp.json();
       applyResumen(data);
     } catch (_err) { /* swallow */ }
   }
 
-  async function silentRefetchResenas(slug, token) {
-    let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resenas`;
-    if (token) url += `?t=${encodeURIComponent(token)}`;
+  async function silentRefetchResenas(slug) {
+    const url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resenas`;
     try {
       const resp = await fetch(url, { credentials: 'include' });
+      if (resp.status === 401) { pollsAlive = false; return; }
       if (!resp.ok) return;
       const data = await resp.json();
       renderResenas(data);
@@ -150,6 +159,21 @@
       labHeader.style.display = 'none';
       labHeader.classList.remove('demo-mode');
     }
+
+    // Wipe the loudest fixture text BEFORE rendering, so a partial-render
+    // bug in any downstream renderer leaves visibly-empty cells instead of
+    // misleading mockup data ("TABERNA DEL ÁNGEL" etc.). Any successful
+    // renderer immediately fills its slot back in.
+    const _wipe = (sel) => {
+      const el = document.querySelector(sel);
+      if (el) el.textContent = '';
+    };
+    _wipe('.venue-tag');
+    _wipe('.z1-venue');
+    _wipe('.z1-meta');
+    _wipe('.z1-rating');
+    _wipe('.z1-reviews');
+    _wipe('.z1-ranking-val');
 
     // Wrap each renderer in try/catch so one failing block doesn't leave
     // the rest of the page on fixture data. Bug Daniel hit on iter 4: a
