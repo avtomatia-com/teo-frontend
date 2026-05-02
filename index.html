@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Teo — Portal homepage mockup</title>
-<link rel="stylesheet" href="portal.css?v=12">
+<link rel="stylesheet" href="portal.css?v=13">
 </head>
 <body data-state="s0" data-page="resumen">
 
@@ -1862,15 +1862,11 @@
         <span class="nav-btn-label">Reseñas</span>
       </button>
 
-      <button class="nav-btn next" data-show="s1" data-page-link="calendar" aria-label="Calendario (próximo)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="5" width="18" height="16" rx="1"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-          <line x1="8" y1="3" x2="8" y2="7"/>
-          <line x1="16" y1="3" x2="16" y2="7"/>
-        </svg>
-        <span class="nav-btn-label">Calendario</span>
-      </button>
+      <!-- Calendario hidden at S0/S1 — at those states the tab content is
+           "locked / not available" and showing the tab just distracts the
+           owner from what they should be doing now (review-mode approval).
+           First meaningful content lands at S2 (single-post Meta-OAuth
+           hook), so the nav button only appears there. -->
       <button class="nav-btn" data-show="s2 s3 s4 paid free" data-page-link="calendar" aria-label="Calendario">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="5" width="18" height="16" rx="1"/>
@@ -1904,6 +1900,6 @@
   </div>
 </div>
 
-<script src="portal.js?v=12" defer></script>
+<script src="portal.js?v=13" defer></script>
 </body>
 </html>
