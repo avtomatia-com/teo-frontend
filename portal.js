@@ -31,6 +31,12 @@
       const newUrl = location.pathname + (qs ? '?' + qs : '') + location.hash;
       history.replaceState(null, '', newUrl);
     }
+    // Showing fixture data ("Taberna del Ángel" etc.) for 20-30s while
+    // /resumen completes confuses owners — they think it's their data.
+    // Wipe the loudest fixture text immediately, before the fetch starts,
+    // and surface a single "Cargando tu informe..." placeholder. apply
+    // Resumen will fill the slots in once data arrives.
+    showLoadingState();
     fetchResumen(slug, token)
       .then(() => fetchResenas(slug, token))
       .then(() => schedulePostLoadPolls(slug));
@@ -52,6 +58,48 @@
   // post-load, then stop — by then the background work is done. Renderers
   // are idempotent (clear .review-row and rebuild from API), so re-calling
   // them just diffs new data in.
+  // Replace the loudest fixture text with neutral placeholders before the
+  // first /resumen call returns. Without this, owners stare at the demo
+  // venue (Taberna del Ángel · Malasaña · Bar La Paloma) for as long as
+  // the API takes to respond, which makes them think Teo got the wrong
+  // venue. The renderers overwrite these slots once data arrives.
+  function showLoadingState() {
+    const set = (sel, value) => {
+      const el = document.querySelector(sel);
+      if (el) el.textContent = value;
+    };
+    set('.venue-tag', 'Cargando…');
+    set('.z1-venue', 'Cargando tu informe…');
+    set('.z1-meta', '');
+    set('.z1-rating', '—');
+    set('.z1-stars', '');
+    set('.z1-reviews', '');
+    set('.z1-ranking-val', '—');
+    // Hide whole demo blocks instead of just their text — text-clear
+    // alone leaves layout artefacts (empty cells with borders that read
+    // as broken). Renderers re-show them by setting display:'' (or by
+    // re-populating in renderCompetitors's case which rebuilds rows).
+    document.querySelectorAll('.z1-callouts').forEach((c) => (c.style.display = 'none'));
+    document.querySelectorAll('.comp-row').forEach((r) => (r.style.display = 'none'));
+    // Bucket preview lines ("La Musa · Ojalá · Lamiak") in collapsible
+    // headers are demo data too. Wipe the text so the preview line is
+    // empty until renderCompetitors fills it back in.
+    document.querySelectorAll('.collapsible-preview').forEach((p) => {
+      // Keep the "abrir ↓" affordance arrow if present, drop the demo text.
+      const arrow = p.querySelector('.preview-arrow');
+      p.textContent = '';
+      if (arrow) p.appendChild(arrow);
+    });
+    // Action CTAs are state-toggled by CSS — hide all so the demo S0
+    // cta-s0 fixture (Activa Teo / Activa la gestión...) doesn't flash
+    // before the real action_cta arrives. applyResumen → renderActionCta
+    // rewrites the matching .cta-${state} block with real copy and the
+    // CSS visibility rule reveals it via the body's data-state.
+    document.querySelectorAll('.action-slot-post-zone2 .cta-item').forEach(
+      (c) => (c.style.visibility = 'hidden')
+    );
+  }
+
   // `pollsAlive` flips to false when ANY poll comes back 401 — owner has
   // rotated the magic link from chat (the new token invalidated this one).
   // Without the flag, every subsequent poll retries with the dead token
@@ -190,6 +238,15 @@
     if (resumen.action_cta)  _safe('action_cta',  () => renderActionCta(resumen.action_cta));
     if (resumen.settings)    _safe('settings',    () => renderSettings(resumen.settings));
     _safe('weekly_delta', () => renderWeeklyDelta(resumen.weekly_delta));
+
+    // Reverse the loading-state hides: callouts stay hidden by their own
+    // empty-data check (the wrapper was hidden, but renderZone1 already
+    // shows it back when callouts are present); comp-rows reveal back if
+    // renderCompetitors populated them; CTA visibility resumes per CSS.
+    document.querySelectorAll('.action-slot-post-zone2 .cta-item').forEach(
+      (c) => (c.style.visibility = '')
+    );
+    document.querySelectorAll('.comp-row').forEach((r) => (r.style.display = ''));
   }
 
   // ── Settings page · Comunicaciones ────────────────────────────────────────
