@@ -151,15 +151,16 @@
     let url = `${API_BASE}/portal/${encodeURIComponent(slug)}/resumen`;
     if (token) url += `?t=${encodeURIComponent(token)}`;
     console.log('[teo] fetchResumen:', url);
+    const t0 = performance.now();
     let resp;
     try {
       resp = await fetch(url, { credentials: 'include' });
     } catch (err) {
-      console.error('[teo] fetchResumen network error:', err);
+      console.error('[teo] fetchResumen network error after %dms:', Math.round(performance.now() - t0), err);
       return showError('No se pudo conectar con el servidor.');
     }
 
-    console.log('[teo] fetchResumen response:', resp.status);
+    console.log('[teo] fetchResumen response:', resp.status, 'in', Math.round(performance.now() - t0), 'ms');
     if (resp.status === 404) return showError('Local no encontrado.');
     if (resp.status === 401)
       return showError(
