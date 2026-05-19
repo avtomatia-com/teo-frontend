@@ -239,6 +239,7 @@
     if (resumen.action_cta)  _safe('action_cta',  () => renderActionCta(resumen.action_cta));
     if (resumen.settings)    _safe('settings',    () => renderSettings(resumen.settings));
     _safe('weekly_delta', () => renderWeeklyDelta(resumen.weekly_delta));
+    _safe('first_post_draft', () => renderFirstPostDraft(resumen.first_post_draft));
 
     // Reverse the loading-state hides: callouts stay hidden by their own
     // empty-data check (the wrapper was hidden, but renderZone1 already
@@ -266,6 +267,42 @@
     if (wr.cta_href) row.setAttribute('href', wr.cta_href);
     const preview = document.querySelector('.comm-report-preview');
     if (preview && wr.value) preview.textContent = wr.value;
+  }
+
+  // ── Calendario · first-post draft (§32.4 Session 2) ───────────────────────
+  // Backend ships `resumen.first_post_draft` at S2/S3 with the beautified
+  // GBP photo + Haiku caption. Render into the existing `cal-s1` block
+  // (already shifted to S2 via CSS). When the field is null, leave the
+  // fixture-empty placeholder visible — the existing CSS `.cal-s1.empty`
+  // path handles that.
+  function renderFirstPostDraft(draft) {
+    const root = document.querySelector('.cal-s1');
+    if (!root) return;
+    if (!draft) return;
+
+    const img = root.querySelector('.post-preview-img');
+    const imgLabel = root.querySelector('.post-preview-img-label');
+    if (img && draft.image_url) {
+      img.style.backgroundImage = `url("${draft.image_url}")`;
+      img.style.backgroundSize = 'cover';
+      img.style.backgroundPosition = 'center';
+      if (imgLabel) imgLabel.style.display = 'none';
+    }
+
+    const caption = root.querySelector('.post-preview-caption');
+    if (caption && draft.caption) caption.textContent = draft.caption;
+
+    const ctaTitle = root.querySelector('.cta-item .cta-title');
+    if (ctaTitle && draft.cta_label) ctaTitle.textContent = draft.cta_label;
+
+    const ctaBtn = root.querySelector('.cta-item .cta-btn');
+    if (ctaBtn && draft.cta_href) ctaBtn.setAttribute('href', draft.cta_href);
+
+    // Hide the demo "Jueves · 14:00" pseudo-schedule — the first post hasn't
+    // been scheduled, it's a draft awaiting approval. The Session 3 calendar
+    // generation will re-show timestamps on the real scheduled posts.
+    const date = root.querySelector('.post-preview-date');
+    if (date) date.style.display = 'none';
   }
 
   // ── Weekly Delta widget (§31.11) ──────────────────────────────────────────
